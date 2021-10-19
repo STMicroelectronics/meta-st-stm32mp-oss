@@ -1,0 +1,91 @@
+How to flash STM32MP-OSS software:
+----------------------------------
+
+1. before flash, please umount all the partitions associated to SDCARD:
+    sudo umount `lsblk --list | grep mmcblk0 | grep part | gawk '{ print \$7 }' | tr '\\n' ' '`
+
+2. uncompress the wic image
+    xz -d st-image-weston-openstlinux-weston-stm32mp1-disco-oss.wic.xz
+
+3. flash the wic image on SDCARD as raw image of SDCARD
+(here we take the part that the sdcard are associated to /dev/mmcblk0
+    dd if=st-image-weston-openstlinux-weston-stm32mp1-disco-oss.wic of=/dev/mmcblk0 bs=8M conv=fdatasync status=progress
+
+
+How to boot on trusted mode (optee boot mode are the default boot mode):
+------------------------------------------------------------------------
+1. plug the SDCARD on your PC
+2. please umount all the partitions associated to SDCARD:
+    sudo umount `lsblk --list | grep mmcblk0 | grep part | gawk '{ print \$7 }' | tr '\\n' ' '`
+
+3. change the version of TF-A binary:
+    dd if=arm-trusted-firmware/tf-a-stm32mp157c-dk2-trusted.stm32 of=/dev/mmcblk0p1
+    dd if=arm-trusted-firmware/tf-a-stm32mp157c-dk2-trusted.stm32 of=/dev/mmcblk0p2
+
+How to boot on optee mode:
+--------------------------
+1. plug the SDCARD on your PC
+2. please umount all the partitions associated to SDCARD:
+    sudo umount `lsblk --list | grep mmcblk0 | grep part | gawk '{ print \$7 }' | tr '\\n' ' '`
+
+3. change the version of TF-A binary:
+    dd if=arm-trusted-firmware/tf-a-stm32mp157c-dk2-optee.stm32 of=/dev/mmcblk0p1
+    dd if=arm-trusted-firmware/tf-a-stm32mp157c-dk2-optee.stm32 of=/dev/mmcblk0p2
+
+How to boot on eval board with optee boot mode:
+-----------------------------------------------
+
+1. plug the SDCARD on your PC
+2. please umount all the partitions associated to SDCARD:
+    sudo umount \`lsblk --list | grep mmcblk0 | grep part | gawk '{ print \$7 }' | tr '\\n' ' '\`
+
+3. change the version of TF-A binary:
+    dd if=arm-trusted-firmware/tf-a-stm32mp157c-ev1-optee.stm32 of=/dev/mmcblk0p1
+    dd if=arm-trusted-firmware/tf-a-stm32mp157c-ev1-optee.stm32 of=/dev/mmcblk0p2
+
+4. change the version of optee binary:
+    dd if=optee/tee-header_v2-stm32mp157c-ev1-optee.stm32 of=/dev/mmcblk0p4
+    dd if=optee/tee-pageable_v2-stm32mp157c-ev1-optee.stm32 of=/dev/mmcblk0p5
+    dd if=optee/tee-pager_v2-stm32mp157c-ev1-optee.stm32 of=/dev/mmcblk0p6
+
+5. change the version of u-boot binary:
+    dd if=u-boot-trusted-stm32mp157c_ev1.stm32 of=/dev/mmcblk0p3
+
+6. to change the default menu of boot on extlinux.conf
+    - plug the SDCARD on your PC
+    - verify that boot partition are mounted: ls /media/$USER/bootfs
+      if not mounted, mount it via: udisksctl mount -b /dev/mmcblk0p7
+
+    - change boot mode to eval board
+      sed -i "s/^DEFAULT disco/DEFAULT eval/" /media/$USER/bootfs/extlinux/extlinux.conf
+
+    - change boot mode to disco board
+      sed -i "s/^DEFAULT eval/DEFAULT disco/" /media/$USER/bootfs/extlinux/extlinux.conf
+
+    - umount sdcard partitions
+        sudo umount `lsblk --list | grep mmcblk0 | grep part | gawk '{ print \$7 }' | tr '\\n' ' '`
+
+
+By using STM32_Programmer_CLI on stm32mp157c-dk2
+------------------------------------------------
+STM32_Programmer_CLI -c port=usb1 -w flashlayout_st-image-weston/optee/FlashLayout_sdcard_stm32mp157c-dk2-optee.tsv
+or
+STM32_Programmer_CLI -c port=usb1 -w flashlayout_st-image-weston/trusted/FlashLayout_sdcard_stm32mp157c-dk2-trusted.tsv
+
+
+By using STM32_Programmer_CLI on stm32mp157c-ev1
+------------------------------------------------
+STM32_Programmer_CLI -c port=usb1 -w flashlayout_st-image-weston/optee/FlashLayout_sdcard_stm32mp157c-ev1-optee.tsv
+or
+STM32_Programmer_CLI -c port=usb1 -w flashlayout_st-image-weston/trusted/FlashLayout_sdcard_stm32mp157c-ev1-trusted.tsv
+
+By using create_sdcard_from_flashlayout.sh script:
+--------------------------------------------------
+./script/create_sdcard_from_flashlayout.sh flashlayout_st-image-weston/optee/FlashLayout_sdcard_stm32mp157c-ev1-optee.tsv
+or
+./script/create_sdcard_from_flashlayout.sh flashlayout_st-image-weston/trusted/FlashLayout_sdcard_stm32mp157c-ev1-trusted.tsv
+or
+./script/create_sdcard_from_flashlayout.sh flashlayout_st-image-weston/trusted/FlashLayout_sdcard_stm32mp157c-dk2-trusted.tsv
+or
+./script/create_sdcard_from_flashlayout.sh flashlayout_st-image-weston/optee/FlashLayout_sdcard_stm32mp157c-dk2-optee.tsv
+
