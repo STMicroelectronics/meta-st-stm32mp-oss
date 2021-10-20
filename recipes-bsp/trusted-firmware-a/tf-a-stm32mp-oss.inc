@@ -73,16 +73,16 @@ do_compile() {
             oe_runmake -C ${S} AARCH32_SP=sp_min \
                 BUILD_PLAT=${B}/fip-trusted-${dt} \
                 DTB_FILE_NAME=${dt}.dtb \
-                BL33=${DEPLOY_DIR}/images/${MACHINE}/bootloader/u-boot-nodtb-${dt}.bin \
-                BL33_CFG=${DEPLOY_DIR}/images/${MACHINE}/bootloader/u-boot-${dt}.dtb \
+                BL33=${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-nodtb-${dt}.bin \
+                BL33_CFG=${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-${dt}.dtb \
                 fip FIP_NAME=fip-${dt}-trusted.bin
 
             # generate fip for optee
             oe_runmake -C ${S} AARCH32_SP=optee \
                 BUILD_PLAT=${B}/fip-optee-${dt} \
                 DTB_FILE_NAME=${dt}.dtb \
-                BL33=${DEPLOY_DIR}/images/${MACHINE}/bootloader/u-boot-nodtb-${dt}.bin \
-                BL33_CFG=${DEPLOY_DIR}/images/${MACHINE}/bootloader/u-boot-${dt}.dtb \
+                BL33=${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-nodtb-${dt}.bin \
+                BL33_CFG=${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-${dt}.dtb \
                 BL32=${DEPLOY_DIR}/images/${MACHINE}/optee/tee-header_v2-${dt}-optee.bin \
                 BL32_EXTRA1=${DEPLOY_DIR}/images/${MACHINE}/optee/tee-pager_v2-${dt}-optee.bin \
                 BL32_EXTRA2=${DEPLOY_DIR}/images/${MACHINE}/optee/tee-pageable_v2-${dt}-optee.bin \
