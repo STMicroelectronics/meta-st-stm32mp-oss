@@ -24,7 +24,7 @@ do_install[noexec] = "1"
 ALLOW_EMPTY_${PN} = "1"
 
 do_deploy_stm32mp15-disco-oss() {
-    install -d ${DEPLOYDIR}/arm-trusted-firmware-flash ${DEPLOYDIR}/fip-flash
+    install -d ${DEPLOYDIR}/arm-trusted-firmware ${DEPLOYDIR}/fip
     install -d ${DEPLOYDIR}/flashlayout_st-image-weston/optee
 
     sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-dk2-optee.tsv.in > ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-dk2-optee.tsv
@@ -34,14 +34,14 @@ do_deploy_stm32mp15-disco-oss() {
     install -m 0644 ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-dk2-raw.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
 
     if [ -e  ${S}/tf-a-stm32mp157c-dk2-usb.stm32 ]; then
-        install -m 0644 ${S}/tf-a-stm32mp157c-dk2-usb.stm32 ${DEPLOYDIR}/arm-trusted-firmware-flash/
+        install -m 0644 ${S}/tf-a-stm32mp157c-dk2-usb.stm32 ${DEPLOYDIR}/arm-trusted-firmware/
     fi
     if [ -e ${S}/fip-stm32mp157f-dk2-optee.bin ]; then
-        install -m 0644 ${S}/fip-stm32mp157f-dk2-optee.bin ${DEPLOYDIR}/fip-flash/
+        install -m 0644 ${S}/fip-stm32mp157f-dk2-optee.bin ${DEPLOYDIR}/fip/
     fi
 }
 do_deploy_stm32mp15-eval-oss() {
-    install -d ${DEPLOYDIR}/arm-trusted-firmware-flash ${DEPLOYDIR}/fip-flash
+    install -d ${DEPLOYDIR}/arm-trusted-firmware ${DEPLOYDIR}/fip
     install -d ${DEPLOYDIR}/flashlayout_st-image-weston/optee
 
     sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-optee.tsv.in > ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-optee.tsv
@@ -51,15 +51,15 @@ do_deploy_stm32mp15-eval-oss() {
     install -m 0644 ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-raw.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
 
     if [ -e  ${S}/tf-a-stm32mp157c-ev1-usb.stm32 ]; then
-        install -m 0644 ${S}/tf-a-stm32mp157c-ev1-usb.stm32 ${DEPLOYDIR}/arm-trusted-firmware-flash/
+        install -m 0644 ${S}/tf-a-stm32mp157c-ev1-usb.stm32 ${DEPLOYDIR}/arm-trusted-firmware/
     fi
     if [ -e ${S}/fip-stm32mp157f-ev1-optee.bin ]; then
-        install -m 0644 ${S}/fip-stm32mp157f-ev1-optee.bin ${DEPLOYDIR}/fip-flash/
+        install -m 0644 ${S}/fip-stm32mp157f-ev1-optee.bin ${DEPLOYDIR}/fip
     fi
 }
 
 do_deploy_stm32mp1-disco-oss() {
-    install -d ${DEPLOYDIR}/arm-trusted-firmware-flash ${DEPLOYDIR}/fip-flash
+    install -d ${DEPLOYDIR}/arm-trusted-firmware ${DEPLOYDIR}/fip
     install -d ${DEPLOYDIR}/flashlayout_st-image-weston/optee
 
     sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-dk2-optee.tsv.in > ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-dk2-optee.tsv
@@ -68,21 +68,21 @@ do_deploy_stm32mp1-disco-oss() {
     sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-raw.tsv.in > ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-raw.tsv
 
     install -m 0644 ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
-    install -m 0644 ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-raw.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
+    #install -m 0644 ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-raw.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
     install -m 0644 ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-dk2-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
     install -m 0644 ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-dk2-raw.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
 
     if [ -e  ${S}/tf-a-stm32mp157c-ev1-usb.stm32 ]; then
-        install -m 0644 ${S}/tf-a-stm32mp157c-ev1-usb.stm32 ${DEPLOYDIR}/arm-trusted-firmware-flash/
+        install -m 0644 ${S}/tf-a-stm32mp157c-ev1-usb.stm32 ${DEPLOYDIR}/arm-trusted-firmware/
     fi
     if [ -e ${S}/fip-stm32mp157f-ev1-optee.bin ]; then
-        install -m 0644 ${S}/fip-stm32mp157f-ev1-optee.bin ${DEPLOYDIR}/fip-flash/
+        install -m 0644 ${S}/fip-stm32mp157f-ev1-optee.bin ${DEPLOYDIR}/fip/
     fi
     if [ -e  ${S}/tf-a-stm32mp157c-dk2-usb.stm32 ]; then
-        install -m 0644 ${S}/tf-a-stm32mp157c-dk2-usb.stm32 ${DEPLOYDIR}/arm-trusted-firmware-flash/
+        install -m 0644 ${S}/tf-a-stm32mp157c-dk2-usb.stm32 ${DEPLOYDIR}/arm-trusted-firmware/
     fi
     if [ -e ${S}/fip-stm32mp157f-dk2-optee.bin ]; then
-        install -m 0644 ${S}/fip-stm32mp157f-dk2-optee.bin ${DEPLOYDIR}/fip-flash/
+        install -m 0644 ${S}/fip-stm32mp157f-dk2-optee.bin ${DEPLOYDIR}/fip/
     fi
 }
 
