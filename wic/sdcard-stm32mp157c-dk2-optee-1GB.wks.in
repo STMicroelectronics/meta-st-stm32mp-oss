@@ -2,7 +2,7 @@
 # long-description: Creates a partitioned SD card image (1GB)
 #
 #  - ----- --------- --------------------
-# | | TFA | u-boot  |  bootfs | rootfs  |
+# | | TFA | fip     |  bootfs | rootfs  |
 #  - ----- --------- --------------------
 # ^ ^     ^         ^         ^        ^
 # | |     |         |         |        |
