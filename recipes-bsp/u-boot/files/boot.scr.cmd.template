@@ -27,13 +27,18 @@ env set load_yellow_splash 'load mmc 0:4 0xc4300000 splash_yellow.bmp; bmp displ
 # for efi boot
 env set localcmd_efi_basci 'run load_yellow_splash; setenv bootargs "%KERNEL_CMDLINE%";load mmc 0:4 ${fdt_addr_r} ${fdtfile};load mmc 0:4 ${kernel_addr_r} zImage;if fdt addr ${fdt_addr_r}; then bootefi ${kernel_addr_r} ${fdt_addr_r};else bootefi ${kernel_addr_r} ${fdtcontroladdr};fi'
 efidebug boot add -b 0000 'kernel' mmc 0:4 zImage -s 'console=ttySTM0,115200 rootwait root=PARTLABEL=rootfs bootmgr0'
-efidebug boot add -b 0001 'rtkernel' mmc 0:4 zImage-rt -s 'console=ttySTM0,115200 rootwait root=PARTLABEL=rootfs bootmgr1'
-efidebug boot add -b 0003 'signkernel' mmc 0:4 zImage.signed -s 'console=ttySTM0,115200 rootwait root=PARTLABEL=rootfs bootmgr3-signed'
+efidebug boot add -b 0001 'signkernel' mmc 0:4 zImage.signed -s 'console=ttySTM0,115200 rootwait root=PARTLABEL=rootfs bootmgr3-signed'
+efidebug boot add -b 0002 'grub' mmc 0:4 grub-arm.efi
+efidebug boot add -b 0003 'rtkernel' mmc 0:4 zImage-rt -s 'console=ttySTM0,115200 rootwait root=PARTLABEL=rootfs bootmgr1'
 efidebug boot order 0000
+
 env set localcmd_efi_bootmgr 'run load_yellow_splash;load mmc 0:4 ${fdt_addr_r} ${fdtfile};if fdt addr ${fdt_addr_r}; then bootefi bootmgr ${fdt_addr_r};else bootefi bootmgr ${fdtcontroladdr};fi'
 env set localcmd_efi_bootmgr_signed 'run load_yellow_splash;load mmc 0:4 0xc4100000 uefi-certificates/PK.auth;setenv -e -nv -bs -rt -at -i 0xc4100000:$filesize PK;load mmc 0:4 0xc4100000 uefi-certificates/KEK.auth;setenv -e -nv -bs -rt -at -i 0xc4100000:$filesize KEK;load mmc 0:4 0xc4100000 uefi-certificates/db.auth;setenv -e -nv -bs -rt -at -i 0xc4100000:$filesize db; run localcmd_efi_bootmgr'
 
-env set localcmd 'efidebug boot next 0003; run localcmd_efi_bootmgr_signed;'
+# to boot efi signed kernel
+env set localcmd_signed 'efidebug boot next 0001; run localcmd_efi_bootmgr_signed;'
+
+env set localcmd 'run localcmd_efi_bootmgr;'
 
 # Update the DISTRO command to search in sub-directory and load M4 firmware
 env set boot_prefixes "/${boot_device}${boot_instance}_"
