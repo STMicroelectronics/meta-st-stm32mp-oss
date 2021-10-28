@@ -15,6 +15,24 @@ For information about OpenEmbedded, see the OpenEmbedded website:
 
  * **http://www.openembedded.org/**
 
+## Important NOTE
+
+ This layer is provided to help the community to use upstream software on STM32MP boards.  
+ This layer is not targeted to be use to generate final product.  
+
+ This layer is designed to update and test upstream code on STM32MP boards:
+ + Linux kernel (recipes-recipes-kernel/linux/linux-stm32mp-oss_x.xx.bb)
+ + Arm Trusted Firmware (TF-A) (recipes-bsp/trusted-firmware-a/tf-a-stm32mp-oss_x.x.bb)
+ + U-Boot (recipes-bsp/u-boot/u-boot-stm32mp-oss_xxxx.xx.bb)
+ + Optee-os (recipes-security/optee/optee-os-stm32mp-oss_x.xx.x.bb)
+      - The component associated to optee-os MUST be aligned to optee-os version:
+          - Optee-client (recipes-security/optee/optee-client-oss_x.xx.x.bb)
+          - Optee-test (recipes-security/optee/optee-test-oss_x.xx.x.bb)  
+
+[See section  How to update opensource component](#update-component)
+
+## Layer Dependency
+
 This layer depends on:
 
 ```
@@ -63,6 +81,9 @@ components and features.
 
 
 ## OSS: How to
+
+Get all repositories:
+```
  repo init -u https://github.com/STMicroelectronics/oe-manifest.git
  repo sync
  cd layers/meta-st/
@@ -70,35 +91,40 @@ components and features.
  cd meta-st-stm32mp-oss
  git checkout -b OSS origin/<branch associated to openembedded-core>
  cd -
-
+```
  For stm32mp15-disco-oss
+```
  MACHINE=stm32mp1-disco-oss DISTRO=openstlinux-weston source layers/meta-st/scripts/envsetup.sh
  bitbake st-image-weston
 
  cd tmp-glibc/deploy/images/stm32mp15-disco-oss/
  # flash wic image on your board:
  dd if=st-image-weston-openstlinux-weston-stm32mp15-disco-oss.wic of=/dev/mmcblk0 bs=8M conv=fdatasync
-
+```
  For stm32mp15-eval-oss
+```
  MACHINE=stm32mp1-eval-oss DISTRO=openstlinux-weston source layers/meta-st/scripts/envsetup.sh
  bitbake st-image-weston
 
  cd tmp-glibc/deploy/images/stm32mp15-eval-oss/
  # flash wic image on your board:
  dd if=st-image-weston-openstlinux-weston-stm32mp15-eval-oss.wic of=/dev/mmcblk0 bs=8M conv=fdatasync
+```
 
-## How to update opensource component
- [See description of component update](docs/oss_update.md)
+## OSS: How to update opensource component <a name="update-component"></a>
 
-## NOTE
-This layer is provided to help the comunity to use upstream software on STM32MP board.
-??????
+[See description of component update](docs/oss_update.md)
+
+## OSS: Boot strategy
+
+[See description of boot strategy](docs/oss_boot_strategy.md)
 
 ## Contributing
+
 If you want to contribute changes, you can send Github pull requests at
 **https://github.com/stmicroelectronics/meta-st-stm32mp-oss/pulls**.
 
 
 ## Maintainers
- - Christophe Priouzeau <christophe.priouzeau@st.com>
 
+ - Christophe Priouzeau <christophe.priouzeau@foss.st.com>
