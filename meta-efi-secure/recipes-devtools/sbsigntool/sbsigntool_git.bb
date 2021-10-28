@@ -35,9 +35,9 @@ def efi_arch(d):
     return arch
 
 # Avoids build breaks when using no-static-libs.inc
-#DISABLE_STATIC_class-target = ""
+#DISABLE_STATIC:class-target = ""
 
-#EXTRA_OECONF_remove_class-target += "\
+#EXTRA_OECONF:remove:class-target += "\
 #    --with-libtool-sysroot \
 #"
 
@@ -55,7 +55,7 @@ EXTRA_OEMAKE += "\
                   -I${STAGING_INCDIR}/efi/${@efi_arch(d)}' \
 "
 
-do_configure_prepend() {
+do_configure:prepend() {
     cd ${S}
 
     if [ ! -e lib/ccan ]; then

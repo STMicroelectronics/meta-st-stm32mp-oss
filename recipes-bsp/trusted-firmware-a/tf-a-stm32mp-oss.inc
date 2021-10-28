@@ -26,13 +26,13 @@ inherit deploy
 DEPENDS += "dtc-native tf-a-tools-native"
 
 # ledge-stm32mp157c-dk2 specific
-TF_A_PLATFORM_stm32mpcommon = "stm32mp1"
+TF_A_PLATFORM:stm32mpcommon = "stm32mp1"
 
 # Extra make settings
 EXTRA_OEMAKE = ' CROSS_COMPILE=${TARGET_PREFIX} '
 EXTRA_OEMAKE += ' PLAT=${TF_A_PLATFORM} '
-EXTRA_OEMAKE_append_armv7a = ' ARCH=aarch32 ARM_ARCH_MAJOR=7'
-EXTRA_OEMAKE_append_armv7ve = ' ARCH=aarch32 ARM_ARCH_MAJOR=7'
+EXTRA_OEMAKE:append:armv7a = ' ARCH=aarch32 ARM_ARCH_MAJOR=7'
+EXTRA_OEMAKE:append:armv7ve = ' ARCH=aarch32 ARM_ARCH_MAJOR=7'
 
 # Debug support
 EXTRA_OEMAKE += 'DEBUG=1'
@@ -73,16 +73,16 @@ do_compile() {
             oe_runmake -C ${S} AARCH32_SP=sp_min \
                 BUILD_PLAT=${B}/fip-trusted-${dt} \
                 DTB_FILE_NAME=${dt}.dtb \
-                BL33=${DEPLOY_DIR}/images/${MACHINE}/bootloader/u-boot-nodtb-${dt}.bin \
-                BL33_CFG=${DEPLOY_DIR}/images/${MACHINE}/bootloader/u-boot-${dt}.dtb \
+                BL33=${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-nodtb-${dt}.bin \
+                BL33_CFG=${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-${dt}.dtb \
                 fip FIP_NAME=fip-${dt}-trusted.bin
 
             # generate fip for optee
             oe_runmake -C ${S} AARCH32_SP=optee \
                 BUILD_PLAT=${B}/fip-optee-${dt} \
                 DTB_FILE_NAME=${dt}.dtb \
-                BL33=${DEPLOY_DIR}/images/${MACHINE}/bootloader/u-boot-nodtb-${dt}.bin \
-                BL33_CFG=${DEPLOY_DIR}/images/${MACHINE}/bootloader/u-boot-${dt}.dtb \
+                BL33=${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-nodtb-${dt}.bin \
+                BL33_CFG=${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-${dt}.dtb \
                 BL32=${DEPLOY_DIR}/images/${MACHINE}/optee/tee-header_v2-${dt}-optee.bin \
                 BL32_EXTRA1=${DEPLOY_DIR}/images/${MACHINE}/optee/tee-pager_v2-${dt}-optee.bin \
                 BL32_EXTRA2=${DEPLOY_DIR}/images/${MACHINE}/optee/tee-pageable_v2-${dt}-optee.bin \
@@ -122,7 +122,7 @@ do_deploy() {
 }
 addtask deploy before do_build after do_compile
 
-FILES_${PN} = "/boot"
+FILES:${PN} = "/boot"
 
 # Configure default mode  (All supported device type)
 EXTRA_OEMAKE += 'STM32MP_SDMMC=1'

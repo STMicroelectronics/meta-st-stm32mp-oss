@@ -4,10 +4,10 @@ DEPENDS += "openssl-native util-linux-native libyaml-native"
 
 B = "${WORKDIR}/build"
 # Configure build dir for externalsrc class usage through devtool
-EXTERNALSRC_BUILD_pn-${PN} = "${WORKDIR}/build"
+EXTERNALSRC_BUILD:pn-${PN} = "${WORKDIR}/build"
 
 # To share config fragments between layers
-FILESEXTRAPATHS_prepend := "${THISDIR}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}:"
 
 # -------------------------------------------------------------
 # Do not deploy kernel module with specfic tarball
@@ -24,7 +24,7 @@ EXTRA_OEMAKE += "${@oe.utils.ifelse(d.getVar('KERNEL_SIGN_ENABLE') == '1', 'INST
 #
 #If the defconfig is contained on the kernel tree (arch/${ARCH}/configs)
 #you must use the following line
-do_configure_prepend() {
+do_configure:prepend() {
     unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
     if [ ! -z ${KERNEL_DEFCONFIG} ];
     then
@@ -78,8 +78,7 @@ python do_loadaddrcheck() {
         bb.fatal('Missing ST_KERNEL_LOADADDR value for ST kernel build: please define it in your machine.')
 }
 
-PACKAGES =+ "${KERNEL_PACKAGE_NAME}-headers ${KERNEL_PACKAGE_NAME}-imagebootfs"
-FILES_${KERNEL_PACKAGE_NAME}-headers = "${exec_prefix}/src/linux*"
-FILES_${KERNEL_PACKAGE_NAME}-image  += "boot/ ${KERNEL_IMAGEDEST}"
-FILES_${KERNEL_PACKAGE_NAME}-imagebootfs = "boot/*.dtb boot/${KERNEL_IMAGETYPE}"
+PACKAGES =+ "${KERNEL_PACKAGE_NAME}-headers"
+FILES:${KERNEL_PACKAGE_NAME}-headers = "${exec_prefix}/src/linux*"
+FILES:${KERNEL_PACKAGE_NAME}-image  += "boot/ ${KERNEL_IMAGEDEST}"
 

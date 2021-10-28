@@ -1,6 +1,6 @@
-DEPENDS_append += " openssl-native efitools-native sbsigntool-native"
+DEPENDS:append += " openssl-native efitools-native sbsigntool-native"
 
-SRC_URI_append = " \
+SRC_URI:append = " \
     file://uefi-certificates/KEK.auth \
     file://uefi-certificates/KEK.crt \
     file://uefi-certificates/KEK.key \
@@ -12,7 +12,7 @@ SRC_URI_append = " \
     file://uefi-certificates/db.auth \
     "
 
-do_install_append() {
+do_install:append() {
     # the public part of certificate must be installed on
     # secure partition
     # Hack: for demonstration, the auth certificate will be installed
@@ -21,8 +21,12 @@ do_install_append() {
         if [ ! "x$img" = "xzImage" ]; then
             continue;
         fi
+        if [ -f ${D}/boot/$img-${KERNEL_VERSION} ]; then
+            cp ${D}/boot/$img-${KERNEL_VERSION} ${D}/boot/$img
+        fi
         KERNEL_SIGN_IMAGE="${D}/boot/$img"
         ${STAGING_BINDIR_NATIVE}/sbsign --key ${WORKDIR}/uefi-certificates/db.key --cert ${WORKDIR}/uefi-certificates/db.crt $KERNEL_SIGN_IMAGE
+        mv ${D}/boot/$img ${D}/boot/$img-${KERNEL_VERSION}
     done
     # install auth certificate file
     # Hack section: will be installed on secure partition
@@ -32,6 +36,5 @@ do_install_append() {
     install -m 0644 ${WORKDIR}/uefi-certificates/PK.auth ${D}/boot/uefi-certificates/
     install -m 0644 ${WORKDIR}/uefi-certificates/KEK.auth ${D}/boot/uefi-certificates/
     install -m 0644 ${WORKDIR}/uefi-certificates/db.auth ${D}/boot/uefi-certificates/
-
 }
 

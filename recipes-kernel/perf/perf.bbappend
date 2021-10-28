@@ -1,1 +1,1 @@
-RDEPENDS_${PN}-tests =+ "bash"
+RDEPENDS:${PN}-tests =+ "bash"

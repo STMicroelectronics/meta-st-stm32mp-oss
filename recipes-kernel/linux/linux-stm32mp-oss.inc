@@ -52,8 +52,8 @@ include ${@bb.utils.contains('RT_KERNEL', '1', 'linux-stm32mp-oss-rt.inc', '', d
 # -------------------------------------------------------------
 # modprobe action
 #
-do_install_append() {
+do_install:append() {
     install -d ${D}/${sysconfdir}/modprobe.d/
     echo "softdep snd-soc-cs42l51 pre: snd-soc-cs42l51-i2c" > ${D}/${sysconfdir}/modprobe.d/stm32mp1-snd.conf
 }
-FILES_${KERNEL_PACKAGE_NAME}-modules += "${sysconfdir}/modprobe.d"
+FILES:${KERNEL_PACKAGE_NAME}-modules += "${sysconfdir}/modprobe.d"

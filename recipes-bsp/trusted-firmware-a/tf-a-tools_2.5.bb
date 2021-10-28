@@ -6,7 +6,7 @@ SRC_URI = "git://github.com/ARM-software/arm-trusted-firmware.git;protocol=https
 #SRCREV corresponds to v2.5
 SRCREV = "1e13c500a0351ac4b55d09a63f7008e2438550f8"
 
-DEPENDS_class-nativesdk = "nativesdk-openssl"
+DEPENDS:class-nativesdk = "nativesdk-openssl"
 
 S = "${WORKDIR}/git"
 
@@ -20,8 +20,8 @@ do_install() {
     install -m 0755 ${B}/tools/fiptool/fiptool ${D}${bindir}/fiptool
 }
 
-FILES_${PN}_class-nativesdk = "${bindir}/fiptool"
+FILES:${PN}:class-nativesdk = "${bindir}/fiptool"
 
-RDEPENDS_${PN}_class-nativesdk += "nativesdk-libcrypto"
+RDEPENDS:${PN}:class-nativesdk += "nativesdk-libcrypto"
 
 BBCLASSEXTEND += "native nativesdk"

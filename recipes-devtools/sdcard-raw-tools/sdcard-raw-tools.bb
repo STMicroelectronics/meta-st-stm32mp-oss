@@ -9,9 +9,9 @@ SRC_URI = "file://create_sdcard_from_flashlayout.sh"
 
 BBCLASSEXTEND = "native nativesdk"
 
-RDEPENDS_${PN}_append = "bash"
+RDEPENDS:${PN}:append = " bash "
 
-RRECOMMENDS_${PN}_append_class-nativesdk = "nativesdk-gptfdisk"
+RRECOMMENDS:${PN}:append:class-nativesdk = " nativesdk-gptfdisk "
 
 inherit deploy
 
@@ -25,7 +25,7 @@ do_install() {
 do_deploy() {
     :
 }
-do_deploy_class-native() {
+do_deploy:class-native() {
     install -d ${DEPLOYDIR}/${SCRIPT_DEPLOYDIR}
     install -m 0755 ${WORKDIR}/create_sdcard_from_flashlayout.sh ${DEPLOYDIR}/${SCRIPT_DEPLOYDIR}/
 }

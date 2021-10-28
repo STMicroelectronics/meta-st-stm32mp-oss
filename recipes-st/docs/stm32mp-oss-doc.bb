@@ -16,7 +16,7 @@ do_install() {
 do_deploy() {
     :
 }
-do_deploy_class-native() {
+do_deploy:class-native() {
     install -d ${DEPLOYDIR}/
     install -m 0755 ${WORKDIR}/how_to_flash.txt ${DEPLOYDIR}/
 }

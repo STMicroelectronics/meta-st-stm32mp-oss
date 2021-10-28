@@ -32,23 +32,23 @@ EXTRA_OECMAKE = " -DOPTEE_TEST_SDK=${TA_DEV_KIT_DIR} \
                  -DCFG_TEE_CLIENT_LOAD_PATH=${libdir} \
                  "
 
-do_compile_prepend() {
+do_compile:prepend() {
     export CFLAGS="${CFLAGS} --sysroot=${STAGING_DIR_HOST}"
 }
 
-do_compile_append() {
+do_compile:append() {
     cd ${S}
     oe_runmake ta
 }
 
-do_install_append () {
+do_install:append () {
     # install path should match the value set in optee-client/tee-supplicant
     # default TEEC_LOAD_PATH is /lib
     mkdir -p ${D}${nonarch_base_libdir}/optee_armtz/
     install -D -p -m0444 ${S}/out/ta/*/*.ta ${D}${nonarch_base_libdir}/optee_armtz/
 }
 
-FILES_${PN} += "${nonarch_base_libdir}/optee_armtz/ ${libdir}"
-RPROVIDES_${PN} += "optee-test"
+FILES:${PN} += "${nonarch_base_libdir}/optee_armtz/ ${libdir}"
+RPROVIDES:${PN} += "optee-test"
 # Imports machine specific configs from staging to build
 PACKAGE_ARCH = "${MACHINE_ARCH}"

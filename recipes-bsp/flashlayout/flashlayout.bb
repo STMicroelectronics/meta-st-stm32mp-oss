@@ -21,9 +21,9 @@ inherit deploy
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
 do_install[noexec] = "1"
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
-do_deploy_stm32mp15-disco-oss() {
+do_deploy:stm32mp15-disco-oss() {
     install -d ${DEPLOYDIR}/arm-trusted-firmware-flash ${DEPLOYDIR}/fip-flash
     install -d ${DEPLOYDIR}/flashlayout_st-image-weston/optee
 
@@ -40,8 +40,7 @@ do_deploy_stm32mp15-disco-oss() {
         install -m 0644 ${S}/fip-stm32mp157f-dk2-optee.bin ${DEPLOYDIR}/fip-flash/
     fi
 }
-do_deploy_stm32mp15-eval-oss() {
-    install -d ${DEPLOYDIR}/arm-trusted-firmware-flash ${DEPLOYDIR}/fip-flash
+do_deploy:stm32mp15-eval-oss() {
     install -d ${DEPLOYDIR}/flashlayout_st-image-weston/optee
 
     sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-optee.tsv.in > ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-optee.tsv
@@ -58,7 +57,7 @@ do_deploy_stm32mp15-eval-oss() {
     fi
 }
 
-do_deploy_stm32mp1-disco-oss() {
+do_deploy:stm32mp1-disco-oss() {
     install -d ${DEPLOYDIR}/arm-trusted-firmware-flash ${DEPLOYDIR}/fip-flash
     install -d ${DEPLOYDIR}/flashlayout_st-image-weston/optee
 
