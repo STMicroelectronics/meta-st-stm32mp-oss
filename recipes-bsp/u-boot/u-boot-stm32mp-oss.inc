@@ -20,6 +20,7 @@ require recipes-bsp/u-boot/u-boot.inc
 RPROVIDES_${PN} += "u-boot"
 
 DEPENDS += "bc-native dtc-native"
+DEPENDS += "python3-setuptools-native"
 
 do_configure_prepend_stm32mp1common() {
     for conf in ${UBOOT_MACHINE};
