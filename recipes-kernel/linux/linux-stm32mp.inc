@@ -9,6 +9,10 @@ EXTERNALSRC_BUILD_pn-${PN} = "${WORKDIR}/build"
 # To share config fragments between layers
 FILESEXTRAPATHS_prepend := "${THISDIR}:"
 
+# for libyaml
+PKG_CONFIG_DIR = "${STAGING_DIR_NATIVE}${libdir}/pkgconfig"
+DEPENDS += "python3-dt-schema-native"
+
 # -------------------------------------------------------------
 # Do not deploy kernel module with specfic tarball
 MODULE_TARBALL_DEPLOY = "1"
