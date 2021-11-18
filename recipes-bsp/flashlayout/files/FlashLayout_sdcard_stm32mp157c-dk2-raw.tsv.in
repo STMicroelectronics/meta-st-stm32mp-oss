@@ -1,4 +1,4 @@
 #Opt	Id	Name	Type	IP	Offset	Binary
--	0x01	fsbl1-boot	Binary	none	0x0	arm-trusted-firmware/flash-tf-a-stm32mp157c-dk2-usb.stm32
--	0x03	fip-boot	Binary	none	0x0	fip/flash-fip-stm32mp157c-dk2-optee.bin
+-	0x01	fsbl1-boot	Binary	none	0x0	arm-trusted-firmware/tf-a-stm32mp157c-dk2-usb.stm32
+-	0x03	fip-boot	Binary	none	0x0	fip/fip-stm32mp157c-dk2-optee.bin
 P	0x10	sdcard	RawImage	mmc0	0x00000000	st-image-weston-openstlinux-weston-#MACHINE#.wic.bin
