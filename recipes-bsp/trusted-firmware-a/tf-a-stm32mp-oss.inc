@@ -69,6 +69,12 @@ do_compile() {
                 cp ${B}/sdcard${soc_suffix}/tf-a-${dt}.stm32 ${B}/sdcard${soc_suffix}/tf-a-${dt}-sdcard.stm32
             fi
 
+            # BL2 USB flashing
+            oe_runmake -C ${S} BUILD_PLAT=${B}/usb${soc_suffix} DTB_FILE_NAME=${dt}.dtb STM32MP_USB_PROGRAMMER=1 ${soc_extra_opt} all
+            if [ -f ${B}/usb${soc_suffix}/tf-a-${dt}.stm32 ]; then
+                cp ${B}/usb${soc_suffix}/tf-a-${dt}.stm32 ${B}/usb${soc_suffix}/tf-a-${dt}-usb.stm32
+            fi
+
             # generate fip for trusted
             oe_runmake -C ${S} AARCH32_SP=sp_min \
                 BUILD_PLAT=${B}/fip-trusted-${dt} \
@@ -109,6 +115,9 @@ do_deploy() {
 
             # BL2 sdcard
             install -m 644 ${B}/sdcard${soc_suffix}/tf-a-${dt}-sdcard.stm32 ${DEPLOYDIR}/arm-trusted-firmware/
+            # BL2 usb
+            install -m 644 ${B}/usb${soc_suffix}/tf-a-${dt}-usb.stm32 ${DEPLOYDIR}/arm-trusted-firmware/
+
             # FIP trusted
             install -m 644 ${B}/fip-trusted-${dt}/fip-${dt}-trusted.bin ${DEPLOYDIR}/fip/
             install -m 644 ${B}/fip-trusted-${dt}/bl32.bin ${DEPLOYDIR}/arm-trusted-firmware/bl32-${dt}-trusted.bin
