@@ -58,20 +58,23 @@ Enter choice: 2
 ```
 This action permit to call the localcmd command of U-BOOT.
 The default localcmd command make:
+* Change the splash screen color
 * load of devicetree (**fdtfile** on u-boot env)
-* ask to **bootefi** command to boot an efi firmware via **bootefi bootmgr ${fdt_addr_r}**.
+* ask via **bootefi** command to boot an efi firmware : **bootefi bootmgr ${fdt_addr_r}**.
+
+
 The EFI firmware to boot are specified by the boot order on U-BOOT shell:
 ```
 efidebug boot order 0000
 ```
-To force to use (or re-use load the linux kernel as EFI Firmware), you need to for the boot order to 0000 on U-BOOT shell:
+To force to use (or re-use ***Linux Kernel*** as EFI Firmware), you need to change the efi boot order to 0000 on U-BOOT shell:
 ```
 STM32MP> efidebug boot order 0000
 STM32MP> run localcmd
 ```
 
 **NOTE**:  
-If you need to restore the default LOCAL command, there is tow way:
+If you need to restore the default LOCAL command, there is two ways:
 * restore to production configuration
 ```
 STM32MP> eraseenv
@@ -104,13 +107,3 @@ The localcmd command make:
 * Load KEY to verify the signed ST_KERNEL_VERSION
 * ask to **bootefi** command to boot an efi firmware via **bootefi bootmgr ${fdt_addr_r}**.
 
-
-### EFI Grub Boot
-On U-Boot shell, you must select to use grub for EFI boot by selecting the correct boot order:
-```
-STM32MP> efidebug boot order 0002
-```
-and ask to boot on efi:
-```
-STM32MP> run localcmd_efi_bootmgr
-```

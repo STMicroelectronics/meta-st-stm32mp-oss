@@ -31,6 +31,9 @@ For information about OpenEmbedded, see the OpenEmbedded website:
 
 [See section  How to update opensource component](#update-component)
 
+For helping the test of EFI boot, some recipes coming from https://github.com/jiazhang0/meta-secure-core 
+are incomporated on the layer (efitools and sbsigntools).
+
 ## Layer Dependency
 
 This layer depends on:

@@ -1,4 +1,5 @@
 ## Purpose
+The goal is to update easily the main components from the community to test it on STM32MP boards.
 
 ## List of components that can be updated
 
