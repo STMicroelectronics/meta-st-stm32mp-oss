@@ -26,7 +26,7 @@ inherit deploy
 DEPENDS += "dtc-native tf-a-tools-native"
 
 # ledge-stm32mp157c-dk2 specific
-TF_A_PLATFORM_stm32mpcommon = "stm32mp1"
+TF_A_PLATFORM:stm32mp15common = "stm32mp1"
 
 # Extra make settings
 EXTRA_OEMAKE = ' CROSS_COMPILE=${TARGET_PREFIX} '
