@@ -1,6 +1,6 @@
 ## Summary
 
-**meta-st-stm32mp-oss BSP layer** is a layer containing the STMicroelectronics bsp metadata for Upstream versions
+**meta-st-stm32mp-oss BSP layer** is a layer containing the STMicroelectronics bsp metadata for upstream versions
 of stm32mp.
 
 This layer relies on OpenEmbedded/Yocto build system that is provided through
@@ -17,7 +17,7 @@ For information about OpenEmbedded, see the OpenEmbedded website:
 
 ## Important NOTE
 
- This layer is provided to help the community to use upstream software on STM32MP boards.  
+ This layer is provided to help the communities to use upstream softwares on STM32MP boards.  
  This layer is not targeted to be use to generate final product.  
 
  This layer is designed to update and test upstream code on STM32MP boards:
@@ -33,6 +33,11 @@ For information about OpenEmbedded, see the OpenEmbedded website:
 
 For helping the test of EFI boot, some recipes coming from https://github.com/jiazhang0/meta-secure-core 
 are incomporated on the layer (efitools and sbsigntools).
+
+**No support.** STMicroelectronics is under no obligation to support the layer and or to provide you with updates or error corrections.
+
+Using the **meta-st-stm32mp-oss BSP** layer, you acknowledge that the Software may have defects or deficiencies which cannot or will not be corrected by STMicroelectronics .
+
 
 ## Layer Dependency
 
@@ -121,6 +126,18 @@ Get all repositories:
 ## OSS: Boot strategy
 
 [See description of boot strategy](docs/oss_boot_strategy.md)
+
+## Supported board
+ Board supported:
+ + STM32MP157C-DK2 via stm32mp15-disco-oss machine
+ + STM32MP157F-DK2 via stm32mp15-disco-oss machine
+ + STM32mp157C-EV1 via stm32mp15-eval-oss machine
+ + STM32mp157F-EV1 via stm32mp15-eval-oss machine
+
+**NOTE**:
+ The software generated for a **C** package boards are compilatible for board which contains **F** package:  
+ + Software for STM32MP157C-DK2 can be used on STM32MP157F-DK2
+ + Software for STM32MP157C-EV1 can be used on STM32MP157F-EV1
 
 ## Contributing
 
