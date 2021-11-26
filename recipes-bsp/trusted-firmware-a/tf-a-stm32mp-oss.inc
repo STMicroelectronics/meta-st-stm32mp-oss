@@ -26,13 +26,13 @@ inherit deploy
 DEPENDS += "dtc-native tf-a-tools-native"
 
 # ledge-stm32mp157c-dk2 specific
-TF_A_PLATFORM:stm32mpcommon = "stm32mp1"
+TF_A_PLATFORM_stm32mpcommon = "stm32mp1"
 
 # Extra make settings
 EXTRA_OEMAKE = ' CROSS_COMPILE=${TARGET_PREFIX} '
 EXTRA_OEMAKE += ' PLAT=${TF_A_PLATFORM} '
-EXTRA_OEMAKE:append:armv7a = ' ARCH=aarch32 ARM_ARCH_MAJOR=7'
-EXTRA_OEMAKE:append:armv7ve = ' ARCH=aarch32 ARM_ARCH_MAJOR=7'
+EXTRA_OEMAKE_append_armv7a = ' ARCH=aarch32 ARM_ARCH_MAJOR=7'
+EXTRA_OEMAKE_append_armv7ve = ' ARCH=aarch32 ARM_ARCH_MAJOR=7'
 
 # Debug support
 EXTRA_OEMAKE += 'DEBUG=1'
@@ -67,6 +67,12 @@ do_compile() {
             oe_runmake -C ${S} BUILD_PLAT=${B}/sdcard${soc_suffix} DTB_FILE_NAME=${dt}.dtb STM32MP_SDMMC=1 ${soc_extra_opt} all
             if [ -f ${B}/sdcard${soc_suffix}/tf-a-${dt}.stm32 ]; then
                 cp ${B}/sdcard${soc_suffix}/tf-a-${dt}.stm32 ${B}/sdcard${soc_suffix}/tf-a-${dt}-sdcard.stm32
+            fi
+
+            # BL2 USB flashing
+            oe_runmake -C ${S} BUILD_PLAT=${B}/usb${soc_suffix} DTB_FILE_NAME=${dt}.dtb STM32MP_USB_PROGRAMMER=1 ${soc_extra_opt} all
+            if [ -f ${B}/usb${soc_suffix}/tf-a-${dt}.stm32 ]; then
+                cp ${B}/usb${soc_suffix}/tf-a-${dt}.stm32 ${B}/usb${soc_suffix}/tf-a-${dt}-usb.stm32
             fi
 
             # generate fip for trusted
@@ -109,6 +115,9 @@ do_deploy() {
 
             # BL2 sdcard
             install -m 644 ${B}/sdcard${soc_suffix}/tf-a-${dt}-sdcard.stm32 ${DEPLOYDIR}/arm-trusted-firmware/
+            # BL2 usb
+            install -m 644 ${B}/usb${soc_suffix}/tf-a-${dt}-usb.stm32 ${DEPLOYDIR}/arm-trusted-firmware/
+
             # FIP trusted
             install -m 644 ${B}/fip-trusted-${dt}/fip-${dt}-trusted.bin ${DEPLOYDIR}/fip/
             install -m 644 ${B}/fip-trusted-${dt}/bl32.bin ${DEPLOYDIR}/arm-trusted-firmware/bl32-${dt}-trusted.bin
@@ -122,7 +131,7 @@ do_deploy() {
 }
 addtask deploy before do_build after do_compile
 
-FILES:${PN} = "/boot"
+FILES_${PN} = "/boot"
 
 # Configure default mode  (All supported device type)
 EXTRA_OEMAKE += 'STM32MP_SDMMC=1'
