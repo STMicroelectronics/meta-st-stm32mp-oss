@@ -31,8 +31,8 @@ TF_A_PLATFORM_stm32mpcommon = "stm32mp1"
 # Extra make settings
 EXTRA_OEMAKE = ' CROSS_COMPILE=${TARGET_PREFIX} '
 EXTRA_OEMAKE += ' PLAT=${TF_A_PLATFORM} '
-EXTRA_OEMAKE_append_armv7a = ' ARCH=aarch32 ARM_ARCH_MAJOR=7'
-EXTRA_OEMAKE_append_armv7ve = ' ARCH=aarch32 ARM_ARCH_MAJOR=7'
+EXTRA_OEMAKE:append:armv7a = ' ARCH=aarch32 ARM_ARCH_MAJOR=7'
+EXTRA_OEMAKE:append:armv7ve = ' ARCH=aarch32 ARM_ARCH_MAJOR=7'
 
 # Debug support
 EXTRA_OEMAKE += 'DEBUG=1'
