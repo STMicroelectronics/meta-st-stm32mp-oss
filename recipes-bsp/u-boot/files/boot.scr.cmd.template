@@ -28,8 +28,7 @@ env set load_yellow_splash 'load mmc 0:4 0xc4300000 splash_yellow.bmp; bmp displ
 env set localcmd_efi_basci 'run load_yellow_splash; setenv bootargs "%KERNEL_CMDLINE%";load mmc 0:4 ${fdt_addr_r} ${fdtfile};load mmc 0:4 ${kernel_addr_r} zImage;if fdt addr ${fdt_addr_r}; then bootefi ${kernel_addr_r} ${fdt_addr_r};else bootefi ${kernel_addr_r} ${fdtcontroladdr};fi'
 efidebug boot add -b 0000 'kernel' mmc 0:4 zImage -s 'console=ttySTM0,115200 rootwait root=PARTLABEL=rootfs bootmgr0'
 efidebug boot add -b 0001 'signkernel' mmc 0:4 zImage.signed -s 'console=ttySTM0,115200 rootwait root=PARTLABEL=rootfs bootmgr3-signed'
-efidebug boot add -b 0002 'grub' mmc 0:4 grub-arm.efi
-efidebug boot add -b 0003 'rtkernel' mmc 0:4 zImage-rt -s 'console=ttySTM0,115200 rootwait root=PARTLABEL=rootfs bootmgr1'
+efidebug boot add -b 0002 'rtkernel' mmc 0:4 zImage-rt -s 'console=ttySTM0,115200 rootwait root=PARTLABEL=rootfs bootmgr1'
 efidebug boot order 0000
 
 env set localcmd_efi_bootmgr 'run load_yellow_splash;load mmc 0:4 ${fdt_addr_r} ${fdtfile};if fdt addr ${fdt_addr_r}; then bootefi bootmgr ${fdt_addr_r};else bootefi bootmgr ${fdtcontroladdr};fi'

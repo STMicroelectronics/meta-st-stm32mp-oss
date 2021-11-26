@@ -1,28 +1,6 @@
 SUMMARY = "STM32MP bootfs Image"
 LICENSE = "MIT"
 
-inherit core-image
-
-# Set ROOTFS_MAXSIZE to expected ROOTFS_SIZE to use the whole disk partition and leave extra space to user
-IMAGE_ROOTFS_MAXSIZE     = "65536"
-IMAGE_OVERHEAD_FACTOR    = "1"
-IMAGE_ROOTFS_EXTRA_SPACE = "0"
-
-# Add specific package for our image:
-PACKAGE_INSTALL = " \
-    kernel-imagebootfs \
-    u-boot-stm32mp-oss-extlinux \
-    ${@bb.utils.contains('MACHINE_FEATURES', 'splashscreen', 'u-boot-stm32mp-splash', '', d)} \
-    ${@bb.utils.contains('RT_KERNEL', '1', '${RT_IMAGE_INSTALL}', '', d)} \
-"
-
-# Add specific autoresize package to bootfs
-AUTORESIZE ?= ""
-PACKAGE_INSTALL += " \
-    ${@bb.utils.contains('COMBINED_FEATURES', 'autoresize', '${AUTORESIZE}', '', d)} \
-"
-
-
 # -----------------------------------------------
 # st-image-partitions.inc
 # -----------------------------------------------
@@ -40,7 +18,9 @@ IMAGE_FSTYPES = "ext4 tar.xz"
 
 # Append DISTRO to image name even if we're not using ST distro setting
 # Mandatory to ease flashlayout file configuration
-IMAGE_BASENAME_append = "${@'' if 'openstlinuxcommon' in OVERRIDES.split(':') else '-${DISTRO}'}"
+IMAGE_BASENAME:append = "${@'' if 'openstlinuxcommon' in OVERRIDES.split(':') else '-${DISTRO}'}"
+
+inherit core-image
 
 # Reset image feature
 IMAGE_FEATURE = ""
@@ -53,15 +33,13 @@ IMAGE_LINGUAS = ""
 LDCONFIGDEPEND = ""
 
 # Remove from IMAGE_PREPROCESS_COMMAND useless buildinfo
-IMAGE_PREPROCESS_COMMAND_remove = "buildinfo;"
+IMAGE_PREPROCESS_COMMAND:remove = "buildinfo;"
 # Remove from IMAGE_PREPROCESS_COMMAND the prelink_image as it could be run after
 # we clean rootfs folder leading to cp error if '/etc/' folder is missing:
 #   cp: cannot create regular file
 #   ‘/local/YOCTO/build/tmp-glibc/work/stm32mp1-openstlinux_weston-linux-gnueabi/st-image-userfs/1.0-r0/rootfs/etc/prelink.conf’:
 #   No such file or directory
-IMAGE_PREPROCESS_COMMAND_remove = "prelink_image;"
-
-IMAGE_PREPROCESS_COMMAND_append = "reformat_rootfs;"
+IMAGE_PREPROCESS_COMMAND:remove = "prelink_image;"
 
 # Cleanup rootfs newly created
 reformat_rootfs() {
@@ -89,3 +67,26 @@ reformat_rootfs() {
         bbwarn "/boot folder not available in rootfs folder, no reformat done..."
     fi
 }
+IMAGE_PREPROCESS_COMMAND += "reformat_rootfs;"
+
+# Set ROOTFS_MAXSIZE to expected ROOTFS_SIZE to use the whole disk partition and leave extra space to user
+IMAGE_ROOTFS_MAXSIZE     = "65536"
+IMAGE_OVERHEAD_FACTOR    = "1"
+IMAGE_ROOTFS_EXTRA_SPACE = "0"
+
+RT_IMAGE_INSTALL ??= ""
+# Add specific package for our image:
+PACKAGE_INSTALL = " \
+    kernel-image \
+    stm32mp-extlinux \
+    ${@bb.utils.contains('MACHINE_FEATURES', 'splashscreen', 'u-boot-stm32mp-splash', '', d)} \
+    ${@bb.utils.contains('RT_KERNEL', '1', '${RT_IMAGE_INSTALL}', '', d)} \
+"
+
+# Add specific initrd package to bootfs
+INITRD_PACKAGE ?= ""
+PACKAGE_INSTALL += " \
+    ${@bb.utils.contains('MACHINE_FEATURES', 'initrd', '${INITRD_PACKAGE}', '', d)} \
+"
+
+IMAGE_NAME_SUFFIX ?= ""
