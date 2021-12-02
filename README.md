@@ -3,8 +3,8 @@
 **meta-st-stm32mp-oss BSP layer** is a layer containing the STMicroelectronics bsp metadata for upstream versions
 of stm32mp.
 
-This layer relies on OpenEmbedded/Yocto build system that is provided through
-Bitbake and OpenEmbedded-Core layers or Poky layer all part of the Yocto Project
+This layer relies on OpenEmbedded/Yocto build system that is providing through
+Bitbake and OpenEmbedded-Core layers or Poky layer all parts of the Yocto Project
 
 The Yocto Project has extensive documentation about OE including a reference manual
 which can be found at:
@@ -18,7 +18,7 @@ For information about OpenEmbedded, see the OpenEmbedded website:
 ## Important NOTE
 
  This layer is provided to help the communities to use upstream softwares on STM32MP boards.  
- This layer is not targeted to be use to generate final product.  
+ This layer is not targeted to be used to generate final product SW release.  
 
  This layer is designed to update and test upstream code on STM32MP boards:
  + Linux kernel (recipes-recipes-kernel/linux/linux-stm32mp-oss_x.xx.bb)
@@ -32,7 +32,7 @@ For information about OpenEmbedded, see the OpenEmbedded website:
 [See section  How to update opensource component](#update-component)
 
 For helping the test of EFI boot, some recipes coming from https://github.com/jiazhang0/meta-secure-core 
-are incomporated on the layer (efitools and sbsigntools).
+are incorporated on this layer (efitools and sbsigntools).
 
 **No support.** STMicroelectronics is under no obligation to support the layer and or to provide you with updates or error corrections.
 
