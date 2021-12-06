@@ -139,6 +139,10 @@ Get all repositories:
  + Software for STM32MP157C-DK2 can be used on STM32MP157F-DK2
  + Software for STM32MP157C-EV1 can be used on STM32MP157F-EV1
 
+## Limitation
+
+The features and boards supported depend on upstream status for each component used.  
+
 ## Contributing
 
 If you want to contribute changes, you can send Github pull requests at
