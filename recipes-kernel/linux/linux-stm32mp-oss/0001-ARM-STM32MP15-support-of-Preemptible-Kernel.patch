@@ -1,6 +1,6 @@
-From eecc86649b73afd4bbaf61077b50cc20e1fa8ed5 Mon Sep 17 00:00:00 2001
+From 2ce1e2204ab336e3fcb5bb296689f6ca2a14a9d2 Mon Sep 17 00:00:00 2001
 From: Christophe Priouzeau <christophe.priouzeau@st.com>
-Date: Tue, 28 Sep 2021 10:55:10 +0200
+Date: Mon, 6 Dec 2021 10:59:45 +0100
 Subject: [PATCH] ARM: STM32MP15: support of Preemptible Kernel
 
 Signed-off-by: Christophe Priouzeau <christophe.priouzeau@st.com>
@@ -9,7 +9,7 @@ Signed-off-by: Christophe Priouzeau <christophe.priouzeau@st.com>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/arm/mach-stm32/Kconfig b/arch/arm/mach-stm32/Kconfig
-index 57699bd8f..e4c6ab8d7 100644
+index 981450315..9c40cc4c6 100644
 --- a/arch/arm/mach-stm32/Kconfig
 +++ b/arch/arm/mach-stm32/Kconfig
 @@ -46,6 +46,7 @@ if ARCH_MULTI_V7
@@ -19,7 +19,7 @@ index 57699bd8f..e4c6ab8d7 100644
 +	select ARCH_SUPPORTS_RT
  	default y
  
- endif # ARMv7-A
+ config MACH_STM32MP13
 -- 
 2.17.1
 
