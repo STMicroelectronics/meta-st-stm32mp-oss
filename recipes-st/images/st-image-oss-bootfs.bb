@@ -74,7 +74,10 @@ IMAGE_ROOTFS_MAXSIZE     = "65536"
 IMAGE_OVERHEAD_FACTOR    = "1"
 IMAGE_ROOTFS_EXTRA_SPACE = "0"
 
-RT_IMAGE_INSTALL ??= ""
+#default init variable of OE
+RT_KERNEL ?= "0"
+RT_IMAGE_INSTALL ?= ""
+
 # Add specific package for our image:
 PACKAGE_INSTALL = " \
     kernel-image \
