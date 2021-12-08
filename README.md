@@ -31,7 +31,7 @@ For information about OpenEmbedded, see the OpenEmbedded website:
 
 [See section  How to update opensource component](#update-component)
 
-For helping the test of EFI boot, some recipes coming from https://github.com/jiazhang0/meta-secure-core 
+For helping the test of EFI boot, some recipes coming from https://github.com/jiazhang0/meta-secure-core
 are incorporated on this layer (efitools and sbsigntools).
 
 **No support.** STMicroelectronics is under no obligation to support the layer and or to provide you with updates or error corrections.
@@ -90,7 +90,7 @@ components and features.
 
 ## OSS: How to
 
-Get all repositories:
+### Get all repositories with ST manifest:
 ```
  repo init -u https://github.com/STMicroelectronics/oe-manifest.git
  repo sync
@@ -102,7 +102,8 @@ Get all repositories:
 ```
  For stm32mp15-disco-oss
 ```
- MACHINE=stm32mp1-disco-oss DISTRO=openstlinux-weston source layers/meta-st/scripts/envsetup.sh
+ MACHINE=stm32mp15-disco-oss DISTRO=openstlinux-weston source layers/meta-st/scripts/envsetup.sh
+
  bitbake st-image-weston
 
  cd tmp-glibc/deploy/images/stm32mp15-disco-oss/
@@ -111,13 +112,79 @@ Get all repositories:
 ```
  For stm32mp15-eval-oss
 ```
- MACHINE=stm32mp1-eval-oss DISTRO=openstlinux-weston source layers/meta-st/scripts/envsetup.sh
+ MACHINE=stm32mp15-eval-oss DISTRO=openstlinux-weston source layers/meta-st/scripts/envsetup.sh
+
  bitbake st-image-weston
 
  cd tmp-glibc/deploy/images/stm32mp15-eval-oss/
  # flash wic image on your board:
  dd if=st-image-weston-openstlinux-weston-stm32mp15-eval-oss.wic of=/dev/mmcblk0 bs=8M conv=fdatasync
 ```
+### Get all repositories manually:
+```
+mkdir layers; cd layers
+git clone https://github.com/openembedded/openembedded-core.git
+cd openembedded-core
+git checkout -b WORKING <origin/<branch associated to meta-st-stm32mp-oss>
+
+git clone https://github.com/openembedded/bitbake.git
+cd bitbake
+git checkout -b WORKING origin/<branch: branch associated to openembbedded-core branch>
+cd ..
+cd ..
+git clone git://github.com/openembedded/meta-openembedded.git
+cd meta-openembedded
+git checkout -b WORKING origin/<branch: branch associated to openembbedded-core branch>
+cd ..
+mkdir meta-st/; cd meta-st
+git clone https://github.com/STMicroelectronics/meta-st-stm32mp-oss
+cd meta-st-stm32mp-oss
+git checkout -b OSS origin/<branch associated to openembedded-core>
+cd ../..
+```
+ For stm32mp15-disco-oss
+```
+
+ source ./layers/openembedded-core/oe-init-build-env build-stm32mp15-disco-oss
+
+ bitbake-layers add-layer ../layers/meta-openembedded/meta-oe
+ bitbake-layers add-layer ../layers/meta-openembedded/meta-perl
+ bitbake-layers add-layer ../layers/meta-openembedded/meta-python
+ bitbake-layers add-layer ../layers/meta-st/meta-st-stm32mp-oss
+
+ echo "MACHINE = \"stm32mp15-disco-oss\"" >> conf/local.conf
+ echo "DISTRO = \"nodistro\"" >> conf/local.conf
+ echo "PACKAGE_CLASSES = \"package_deb\" " >> conf/local.conf
+
+ bitbake core-image-base
+
+ cd tmp-glibc/deploy/images/stm32mp15-disco-oss/
+ # flash wic image on your board:
+ dd if=core-image-base-stm32mp15-disco-oss.wic of=/dev/mmcblk0 bs=8M conv=fdatasync
+```
+ For stm32mp15-eval-oss
+```
+ MACHINE=stm32mp15-eval-oss DISTRO=openstlinux-weston source layers/meta-st/scripts/envsetup.sh
+ bitbake-layers add-layer ../layers/meta-openembedded/meta-oe
+ bitbake-layers add-layer ../layers/meta-openembedded/meta-perl
+ bitbake-layers add-layer ../layers/meta-openembedded/meta-python
+ bitbake-layers add-layer ../layers/meta-st/meta-st-stm32mp-oss
+
+ echo "MACHINE = \"stm32mp15-eval-oss\"" >> conf/local.conf
+ echo "DISTRO = \"nodistro\"" >> conf/local.conf
+ echo "PACKAGE_CLASSES = \"package_deb\" " >> conf/local.conf
+
+ bitbake core-image-base
+
+ cd tmp-glibc/deploy/images/stm32mp15-eval-oss/
+ # flash wic image on your board:
+ dd if=core-image-base-stm32mp15-eval-oss.wic of=/dev/mmcblk0 bs=8M conv=fdatasync
+```
+
+
+
+
+
 
 ## OSS: How to update opensource component <a name="update-component"></a>
 
