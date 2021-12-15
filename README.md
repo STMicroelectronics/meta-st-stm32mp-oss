@@ -45,30 +45,30 @@ This layer depends on:
 
 ```
 [OECORE]
-URI: https://github.com/openembedded/openembedded-core.git
-layers: meta
-branch: same dedicated branch as meta-st-stm32mp
-revision: HEAD
+  URI: https://github.com/openembedded/openembedded-core.git
+  layers: meta
+  branch: same dedicated branch as meta-st-stm32mp
+  revision: HEAD
 [BITBAKE]
-URI: https://github.com/openembedded/bitbake.git
-branch: branch associated to oecore branch
-revision: HEAD
+  URI: https://github.com/openembedded/bitbake.git
+  branch: branch associated to oecore branch
+  revision: HEAD
 ```
 or
 ```
 [OECORE]
-URI: git://git.yoctoproject.org/poky
-layers: meta
-branch: same dedicated branch as meta-st-stm32mp-oss
-revision: HEAD
+  URI: git://git.yoctoproject.org/poky
+  layers: meta
+  branch: same dedicated branch as meta-st-stm32mp-oss
+  revision: HEAD
 ```
 
 ```
 [META-OPENEMBEDDED]
-URI: git://github.com/openembedded/meta-openembedded.git
-layers: meta-python meta-oe
-branch: same dedicated branch as meta-st-stm32mp-oss
-revision: HEAD
+  URI: git://github.com/openembedded/meta-openembedded.git
+  layers: meta-python meta-oe
+  branch: same dedicated branch as meta-st-stm32mp-oss
+  revision: HEAD
 ```
 
 The dependency (meta-python) are due to the usage of OPTEE which require to use some python packages.
@@ -90,57 +90,28 @@ components and features.
 
 ## OSS: How to
 
-### Get all repositories with ST manifest:
-```
- repo init -u https://github.com/STMicroelectronics/oe-manifest.git
- repo sync
- cd layers/meta-st/
- git clone https://github.com/STMicroelectronics/meta-st-stm32mp-oss
- cd meta-st-stm32mp-oss
- git checkout -b OSS origin/<branch associated to openembedded-core>
- cd -
-```
- For stm32mp15-disco-oss
-```
- MACHINE=stm32mp15-disco-oss DISTRO=openstlinux-weston source layers/meta-st/scripts/envsetup.sh
-
- bitbake st-image-weston
-
- cd tmp-glibc/deploy/images/stm32mp15-disco-oss/
- # flash wic image on your board:
- dd if=st-image-weston-openstlinux-weston-stm32mp15-disco-oss.wic of=/dev/mmcblk0 bs=8M conv=fdatasync
-```
- For stm32mp15-eval-oss
-```
- MACHINE=stm32mp15-eval-oss DISTRO=openstlinux-weston source layers/meta-st/scripts/envsetup.sh
-
- bitbake st-image-weston
-
- cd tmp-glibc/deploy/images/stm32mp15-eval-oss/
- # flash wic image on your board:
- dd if=st-image-weston-openstlinux-weston-stm32mp15-eval-oss.wic of=/dev/mmcblk0 bs=8M conv=fdatasync
-```
 ### Get all repositories manually:
 ```
-mkdir layers; cd layers
-git clone https://github.com/openembedded/openembedded-core.git
-cd openembedded-core
+mkdir -p layers/meta-st
+git clone https://github.com/openembedded/openembedded-core.git layers/openembedded-core
+cd layers/openembedded-core
 git checkout -b WORKING <origin/<branch associated to meta-st-stm32mp-oss>
+cd -
 
-git clone https://github.com/openembedded/bitbake.git
-cd bitbake
+git clone https://github.com/openembedded/bitbake.git layers/openembedded-core/bitbake
+cd layers/openembedded-core/
 git checkout -b WORKING origin/<branch: branch associated to openembbedded-core branch>
-cd ..
-cd ..
-git clone git://github.com/openembedded/meta-openembedded.git
-cd meta-openembedded
+cd -
+
+git clone git://github.com/openembedded/meta-openembedded.git layers/meta-openembedded
+cd layers/meta-openembedded
 git checkout -b WORKING origin/<branch: branch associated to openembbedded-core branch>
-cd ..
-mkdir meta-st/; cd meta-st
-git clone https://github.com/STMicroelectronics/meta-st-stm32mp-oss
-cd meta-st-stm32mp-oss
+cd -
+
+git clone https://github.com/STMicroelectronics/meta-st-stm32mp-oss layers/meta-st/meta-st-stm32mp-oss
+cd ayers/meta-st/meta-st-stm32mp-oss
 git checkout -b OSS origin/<branch associated to openembedded-core>
-cd ../..
+cd -
 ```
  For stm32mp15-disco-oss
 ```
@@ -181,11 +152,6 @@ cd ../..
  dd if=core-image-base-stm32mp15-eval-oss.wic of=/dev/mmcblk0 bs=8M conv=fdatasync
 ```
 
-
-
-
-
-
 ## OSS: How to update opensource component <a name="update-component"></a>
 
 [See description of component update](docs/oss_update.md)
@@ -205,6 +171,9 @@ cd ../..
  The software generated for a **C** package boards are compilatible for board which contains **F** package:  
  + Software for STM32MP157C-DK2 can be used on STM32MP157F-DK2
  + Software for STM32MP157C-EV1 can be used on STM32MP157F-EV1
+
+## Go futher
++ [Generate Zephyr image](doc/oss_zephyr.md) for testing on STM32MP boards.
 
 ## Limitation
 
