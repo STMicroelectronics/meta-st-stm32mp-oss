@@ -46,7 +46,7 @@ git clone https://github.com/openembedded/bitbake.git layers/openembedded-core/b
 cd layers/openembedded-core/bitbake
 git checkout -b WORKING origin/<branch: branch associated to openembbedded-core branch>
 cd -
-git clone git://github.com/openembedded/meta-openembedded.gitlayers/meta-openembedded
+git clone git://github.com/openembedded/meta-openembedded.git layers/meta-openembedded
 cd layers/meta-openembedded
 git checkout -b WORKING origin/<branch: branch associated to openembbedded-core branch>
 cd -
