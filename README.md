@@ -94,7 +94,6 @@ components and features.
 ```
  repo init -u https://github.com/STMicroelectronics/oe-manifest.git
  repo sync
- cd layers/meta-st/
  git clone https://github.com/STMicroelectronics/meta-st-stm32mp-oss layers/meta-st/meta-st-stm32mp-oss
  cd layers/meta-st/meta-st-stm32mp-oss
  git checkout -b OSS origin/<branch associated to openembedded-core>
@@ -139,7 +138,7 @@ git checkout -b WORKING origin/<branch: branch associated to openembbedded-core 
 cd -
 
 git clone https://github.com/STMicroelectronics/meta-st-stm32mp-oss layers/meta-st/meta-st-stm32mp-oss
-cd ayers/meta-st/meta-st-stm32mp-oss
+cd layers/meta-st/meta-st-stm32mp-oss
 git checkout -b OSS origin/<branch associated to openembedded-core>
 cd -
 ```
@@ -201,6 +200,9 @@ cd -
  The software generated for a **C** package boards are compilatible for board which contains **F** package:  
  + Software for STM32MP157C-DK2 can be used on STM32MP157F-DK2
  + Software for STM32MP157C-EV1 can be used on STM32MP157F-EV1
+
+## Go futher
++ [Generate Zephyr image](doc/oss_zephyr.md) for testing on STM32MP boards.
 
 ## Limitation
 
