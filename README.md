@@ -109,7 +109,7 @@ git checkout -b WORKING origin/<branch: branch associated to openembbedded-core 
 cd -
 
 git clone https://github.com/STMicroelectronics/meta-st-stm32mp-oss layers/meta-st/meta-st-stm32mp-oss
-cd ayers/meta-st/meta-st-stm32mp-oss
+cd layers/meta-st/meta-st-stm32mp-oss
 git checkout -b OSS origin/<branch associated to openembedded-core>
 cd -
 ```
