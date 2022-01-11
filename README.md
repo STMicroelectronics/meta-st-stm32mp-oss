@@ -173,7 +173,7 @@ cd -
  + Software for STM32MP157C-EV1 can be used on STM32MP157F-EV1
 
 ## Go futher
-+ [Generate Zephyr image](doc/oss_zephyr.md) for testing on STM32MP boards.
++ [Generate Zephyr image](docs/oss_zephyr.md) for testing on STM32MP boards.
 
 ## Limitation
 
