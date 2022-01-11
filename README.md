@@ -201,6 +201,9 @@ cd -
  + Software for STM32MP157C-DK2 can be used on STM32MP157F-DK2
  + Software for STM32MP157C-EV1 can be used on STM32MP157F-EV1
 
+## Go futher
++ [Generate Honister Zephyr image](https://github.com/STMicroelectronics/meta-st-stm32mp-oss/blob/honister/docs/oss_zephyr.md) for testing on STM32MP boards.
+
 ## Limitation
 
 The features and boards supported depend on upstream status for each component used.  
