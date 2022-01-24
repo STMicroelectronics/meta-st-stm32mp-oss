@@ -1,10 +1,10 @@
 # ------------------------------------------------
 # to be updated
-ST_KERNEL_VERSION = "5.16"
-LINUX_VERSION = "5.16"
+ST_KERNEL_VERSION = "5.17-rc1"
+LINUX_VERSION = "5.17"
 
 SRC_URI = "https://git.kernel.org/torvalds/t/linux-${ST_KERNEL_VERSION}.tar.gz;name=kernel"
 
-SRC_URI[kernel.sha256sum] = "d5a4751aada0ecd6bee5dbc961dd056e5f8f87ac86dfed9dae145a85035765d2"
+SRC_URI[kernel.sha256sum] = "9269b46a87c16941871f81057c8b82c913869eb86037b92c0bd4d5b9aa69dece"
 # ------------------------------------------------
 require linux-stm32mp-oss.inc
