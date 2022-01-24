@@ -1,0 +1,2 @@
+LTTNGTOOLS:stm32mpcommon = ""
+
