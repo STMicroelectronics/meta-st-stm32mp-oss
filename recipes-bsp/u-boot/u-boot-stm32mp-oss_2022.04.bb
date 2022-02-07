@@ -3,7 +3,7 @@ require u-boot-stm32mp-oss.inc
 # ------------------------------------------------
 # to be updated
 UBOOT_VERSION = "2022.01"
-SRCREV = "d323242b62920be08e3a2efb1a61bd9bdf9ed583"
+SRCREV = "b5c5b9a0bee56030f9f05ece52334b5207b72673"
 #SRCREV = "d637294e264adfeb29f390dfc393106fd4d41b17" # 2022.01
 #SRCREV = "d80bb749fab53da72c4a0e09b8c2d2aaa3103c91" # 2021.10
 #SRCREV = "840658b093976390e9537724f802281c9c8439f5" # 2021.07
