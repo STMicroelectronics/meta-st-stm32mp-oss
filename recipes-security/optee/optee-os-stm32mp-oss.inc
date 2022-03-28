@@ -24,7 +24,7 @@ B = "${WORKDIR}/build"
 # Configure build dir for externalsrc class usage through devtool
 EXTERNALSRC_BUILD_pn-${PN} = "${WORKDIR}/build"
 
-DEPENDS += "dtc-native python3-pycryptodomex-native python3-pycrypto-native python3-pyelftools-native libgcc"
+DEPENDS += "dtc-native python3-pycryptodomex-native python3-pyelftools-native libgcc"
 DEPENDS += "python3-cryptography-native"
 
 inherit deploy python3native
