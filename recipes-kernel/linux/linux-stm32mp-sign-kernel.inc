@@ -1,4 +1,4 @@
-DEPENDS:append += " openssl-native efitools-native sbsigntool-native"
+DEPENDS:append = " openssl-native efitools-native sbsigntool-native "
 
 SRC_URI:append = " \
     file://uefi-certificates/KEK.auth \
