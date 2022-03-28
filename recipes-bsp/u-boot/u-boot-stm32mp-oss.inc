@@ -35,10 +35,10 @@ do_configure_prepend_stm32mp1common() {
 # -----------------------------------------------------------------------------
 # Append deploy to handle specific device tree binary deployement
 #
-SPL_BINARY_LEDGE_stm32mp1common = "spl/u-boot-spl.stm32"
+SPL_BINARY_OSS_stm32mp1common = "spl/u-boot-spl.stm32"
 do_deploy[sstate-outputdirs] = "${DEPLOY_DIR_IMAGE}/u-boot"
 do_deploy_append() {
-if [ -n "${SPL_BINARY_LEDGE}" ]; then
+if [ -n "${SPL_BINARY_OSS}" ]; then
     # Clean deploydir from any available binary first
     # This allows to only install the devicetree binary ones
     rm -rf ${DEPLOYDIR}
@@ -64,9 +64,9 @@ if [ -n "${SPL_BINARY_LEDGE}" ]; then
                             fi
                             # As soon as SPL binary exists, install it
                             # This allow to mix u-boot configuration, with and without SPL
-                            if [ -f ${B}/${config}/${SPL_BINARY_LEDGE} ]; then
+                            if [ -f ${B}/${config}/${SPL_BINARY_OSS} ]; then
                                 install -d ${DEPLOYDIR}/spl
-                                install -m 644 ${B}/${config}/${SPL_BINARY_LEDGE} ${DEPLOYDIR}/${SPL_BINARY_LEDGE}-${type}
+                                install -m 644 ${B}/${config}/${SPL_BINARY_OSS} ${DEPLOYDIR}/${SPL_BINARY_OSS}-${type}
                             fi
                         fi
                     done
