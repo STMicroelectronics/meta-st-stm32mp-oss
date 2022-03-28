@@ -20,6 +20,7 @@ PV = "${OPTEE_VERSION}-git${SRCPV}"
 OPTEE_CLIENT_EXPORT = "${STAGING_DIR_HOST}${prefix}"
 TEEC_EXPORT         = "${STAGING_DIR_HOST}${prefix}"
 TA_DEV_KIT_DIR      = "${STAGING_INCDIR}/optee/export-user_ta"
+TEE_PLUGIN_LOAD_PATH = "${libdir}/tee-supplicant/plugins"
 
 EXTRA_OEMAKE = " TA_DEV_KIT_DIR=${TA_DEV_KIT_DIR} \
                  OPTEE_CLIENT_EXPORT=${OPTEE_CLIENT_EXPORT} \
@@ -28,9 +29,12 @@ EXTRA_OEMAKE = " TA_DEV_KIT_DIR=${TA_DEV_KIT_DIR} \
                  CROSS_COMPILE_TA=${TARGET_PREFIX} \
                  V=1 \
                  CFG_TEE_CLIENT_LOAD_PATH=${libdir} \
+                 CFG_TEE_PLUGIN_LOAD_PATH=${TEE_PLUGIN_LOAD_PATH} \
+                 DESTDIR=${D} \
                "
 EXTRA_OECMAKE = " -DOPTEE_TEST_SDK=${TA_DEV_KIT_DIR} \
                  -DCFG_TEE_CLIENT_LOAD_PATH=${libdir} \
+                 -DCFG_TEE_PLUGIN_LOAD_PATH=${TEE_PLUGIN_LOAD_PATH} \
                  "
 
 do_compile:prepend() {

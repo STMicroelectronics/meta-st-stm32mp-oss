@@ -2,7 +2,7 @@ SUMMARY = "OPTEE TA development kit for stm32mp"
 LICENSE = "BSD-2-Clause & BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=c1f21c4f72f372ef38a5a4aee55ec173"
 
-SRC_URI = "git://github.com/OP-TEE/optee_os.git;protocol=https;name=os"
+SRC_URI = "git://github.com/OP-TEE/optee_os.git;protocol=https;nobranch=1;name=os"
 
 PV = "${OPTEE_VERSION}-git${SRCPV}"
 
@@ -24,7 +24,7 @@ B = "${WORKDIR}/build"
 # Configure build dir for externalsrc class usage through devtool
 EXTERNALSRC_BUILD:pn-${PN} = "${WORKDIR}/build"
 
-DEPENDS += "dtc-native python3-pycryptodomex-native python3-pycrypto-native python3-pyelftools-native libgcc"
+DEPENDS += "dtc-native python3-pycryptodomex-native python3-pyelftools-native libgcc"
 DEPENDS += "python3-cryptography-native"
 
 inherit deploy python3native
