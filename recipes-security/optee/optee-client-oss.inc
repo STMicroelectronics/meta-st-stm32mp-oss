@@ -8,7 +8,7 @@ inherit python3native systemd cmake
 
 PROVIDES += "optee-client"
 
-SRC_URI = "git://github.com/OP-TEE/optee_client.git \
+SRC_URI = "git://github.com/OP-TEE/optee_client.git;protocol=https;branch=master \
            file://tee-supplicant.service \
     "
 

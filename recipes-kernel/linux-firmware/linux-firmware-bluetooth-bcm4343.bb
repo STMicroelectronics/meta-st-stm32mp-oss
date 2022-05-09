@@ -9,7 +9,7 @@ NO_GENERIC_LICENSE[Firmware-cypress-bcm4343] = "LICENCE.cypress"
 
 inherit allarch
 
-SRC_URI = "git://github.com/murata-wireless/cyw-bt-patch;protocol=https"
+SRC_URI = "git://github.com/murata-wireless/cyw-bt-patch;protocol=https;branch=master"
 SRCREV = "c5f1b13697d4ac8eec2cb6f21636085fbb55acd1"
 
 PV = "3.0"
@@ -33,7 +33,7 @@ FILES:${PN} = "${nonarch_base_libdir}/firmware/"
 
 RDEPENDS:${PN} += "${PN}-cypress-license"
 
-RRECOMMENDS:${PN}:append:stm32mpcommon += "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'bluetooth-suspend', '', d)}"
+RRECOMMENDS:${PN}:append:stm32mpcommon = " ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'bluetooth-suspend', '', d)} "
 
 # Firmware files are generally not ran on the CPU, so they can be
 # allarch despite being architecture specific

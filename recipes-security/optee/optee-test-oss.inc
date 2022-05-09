@@ -10,7 +10,7 @@ inherit python3native cmake
 
 PROVIDES += "optee-test"
 
-SRC_URI = "git://github.com/OP-TEE/optee_test.git;protocol=https"
+SRC_URI = "git://github.com/OP-TEE/optee_test.git;protocol=https;branch=master"
 
 S = "${WORKDIR}/git"
 
