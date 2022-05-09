@@ -18,7 +18,7 @@ DEPENDS:append = " \
 PV = "1.9.2+git${SRCPV}"
 
 SRC_URI = "\
-    git://git.kernel.org/pub/scm/linux/kernel/git/jejb/efitools.git \
+    git://git.kernel.org/pub/scm/linux/kernel/git/jejb/efitools.git;branch=master \
     file://Fix-for-the-cross-compilation.patch \
     file://Kill-all-the-build-warning-caused-by-implicit-declar.patch \
     file://Fix-the-wrong-dependency-for-blacklist.esl.patch \
@@ -28,7 +28,7 @@ SRC_URI = "\
     file://Don-t-build-PreLoader.efi.patch \
     file://Reuse-xxdi.pl.patch \
     file://Add-static-keyword-for-IsValidVariableHeader.patch \
-    file://Dynamically-load-openssl.cnf-for-openssl-1.0.x-and-1.patch \
+    file://Dynamically-load-openssl.cnf-for-openssl-1.0.x-1.1.x.patch \
     file://0001-console.c-Fix-compilation-against-latest-usr-include.patch \
 "
 SRCREV = "392836a46ce3c92b55dc88a1aebbcfdfc5dcddce"
@@ -76,4 +76,4 @@ fakeroot python do_sign() {
 
 FILES:${PN} += "${EFI_BOOT_PATH}"
 
-SSTATE_DUPWHITELIST += "${DEPLOY_DIR_IMAGE}/LockDown.efi"
+SSTATE_ALLOW_OVERLAP_FILES += "${DEPLOY_DIR_IMAGE}/LockDown.efi"
