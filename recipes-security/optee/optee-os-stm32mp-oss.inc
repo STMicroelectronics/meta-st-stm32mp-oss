@@ -52,6 +52,7 @@ do_configure:prepend(){
 
 do_compile() {
     export CFLAGS="${CFLAGS} --sysroot=${STAGING_DIR_HOST}"
+    export OPENSSL_MODULES=${STAGING_LIBDIR_NATIVE}/ossl-modules/
 
     unset -v CPPFLAGS LDFLAGS LDADD
     if [ -n "${OPTEE_CONF_EXTENDED}" ]; then

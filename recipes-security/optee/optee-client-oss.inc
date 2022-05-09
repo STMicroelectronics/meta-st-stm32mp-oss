@@ -10,6 +10,8 @@ PROVIDES += "optee-client"
 
 SRC_URI = "git://github.com/OP-TEE/optee_client.git;protocol=https;branch=master \
            file://tee-supplicant.service \
+           file://create-tee-supplicant-env \
+           file://optee-udev.rules \
     "
 
 S = "${WORKDIR}/git"
@@ -20,11 +22,12 @@ SYSTEMD_SERVICE:${PN} = "tee-supplicant.service"
 
 
 EXTRA_OECMAKE = " \
-    -DCFG_TEE_FS_PARENT_PATH='/data/tee' \
+    -DCFG_TEE_FS_PARENT_PATH='${localstatedir}/lib/tee' \
     -DCFG_WERROR=OFF \
     -DCFG_TEE_CLIENT_LOG_LEVEL=2 \
     -DCFG_TEE_CLIENT_LOG_FILE='/data/tee/teec.log' \
     -DBUILD_SHARED_LIBS=ON \
+    -DRPMB_EMU=0 \
     "
 
 do_install:append() {
@@ -34,6 +37,22 @@ do_install:append() {
               ${WORKDIR}/tee-supplicant.service
 
         install -D -p -m0644 ${WORKDIR}/tee-supplicant.service ${D}${systemd_system_unitdir}/tee-supplicant.service
+        install -D -p -m0755 ${WORKDIR}/create-tee-supplicant-env ${D}${sbindir}/
     fi
+    install -d ${D}${sysconfdir}/udev/rules.d
+    install -m 0644 ${WORKDIR}/optee-udev.rules ${D}${sysconfdir}/udev/rules.d/optee.rules
+    install -d -m770 -o root -g tee ${D}${localstatedir}/lib/tee
 }
 RPROVIDES:${PN} += "optee-client"
+FILES:${PN} += "${sysconfdir} ${localstatedir}"
+
+inherit useradd
+
+USERADD_PACKAGES = "${PN}"
+# Create groups 'tee' and 'teeclnt'. Permissions are set elsewhere on
+# /dev/teepriv0 and /dev/tee0 so that tee-supplicant should run as a user that
+# is a member of the 'tee' group, and TEE client applications should runs as a
+# user that is a member of the 'teeclnt' group.
+GROUPADD_PARAM:${PN} = "--system tee; --system teeclnt"
+# Create user 'tee' member of group 'tee' to run tee-supplicant
+USERADD_PARAM:${PN} = "--system -d / -M -s /bin/nologin -c 'User for tee-supplicant' -g tee tee"
