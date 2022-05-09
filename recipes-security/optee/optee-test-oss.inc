@@ -1,10 +1,9 @@
 SUMMARY = "OP-TEE sanity testsuite"
 HOMEPAGE = "https://github.com/OP-TEE/optee_test"
 
-LICENSE = "BSD-2-Clause & GPLv2"
+LICENSE = "BSD-2-Clause & GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://${S}/LICENSE.md;md5=daa2bcccc666345ab8940aab1315a4fa"
 
-DEPENDS = "optee-client virtual/optee-os python3-pycryptodomex-native python3-pycrypto-native libgcc openssl"
 DEPENDS += "python3-cryptography-native"
 
 inherit python3native cmake
