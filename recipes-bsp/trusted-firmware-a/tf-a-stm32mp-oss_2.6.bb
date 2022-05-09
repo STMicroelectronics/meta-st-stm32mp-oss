@@ -4,7 +4,7 @@ require tf-a-stm32mp-oss.inc
 # to be updated
 TFA_VERSION = "2.6"
 
-SRCREV = "c43641ebf0fb9c0e02d4d1ed8ea75c5abf399e6a"
+SRCREV = "894c635b8316f579dc3cceab310ed878092f6bb1"
 #2.6 SRCREV = "a1f02f4f3daae7e21ee58b4c93ec3e46b8f28d15"
 #2.5 SRCREV = "1e13c500a0351ac4b55d09a63f7008e2438550f8"
 #2.4 SRCREV = "e2c509a39c6cc4dda8734e6509cdbe6e3603cdfc"
