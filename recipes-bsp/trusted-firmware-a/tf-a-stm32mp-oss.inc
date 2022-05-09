@@ -131,7 +131,7 @@ do_deploy() {
 }
 addtask deploy before do_build after do_compile
 
-FILES_${PN} = "/boot"
+FILES:${PN} = "/boot"
 
 # Configure default mode  (All supported device type)
 EXTRA_OEMAKE += 'STM32MP_SDMMC=1'
