@@ -32,6 +32,9 @@ do_configure:prepend:stm32mp1common() {
     done
 }
 
+do_configure:prepend() {
+    export OPENSSL_MODULES=${STAGING_LIBDIR_NATIVE}/ossl-modules/
+}
 # -----------------------------------------------------------------------------
 # Append deploy to handle specific device tree binary deployement
 #
