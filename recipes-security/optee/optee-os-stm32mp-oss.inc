@@ -59,12 +59,22 @@ do_compile() {
         for conf in ${OPTEE_CONF_EXTENDED}; do
             predtb=$(echo ${conf} | cut -d':' -f1)
             param=$(echo ${conf} | cut -d':' -f2)
-            oe_runmake -C ${S} O=${B}/$predtb $param CFG_EMBED_DTB_SOURCE_FILE=${predtb}.dts
+            for soc in ${STM32MP_SOC_NAME}; do
+                if [ "$(echo ${conf} | grep -c ${soc})" -eq 1 ]; then
+                    soc_extra="$(echo CFG_${soc} | awk '{print toupper($0)}')=y"
+                fi
+            done
+            oe_runmake -C ${S} O=${B}/$predtb $param CFG_EMBED_DTB_SOURCE_FILE=${predtb}.dts ${soc_extra}
         done
     else
         if [ -n "${OPTEE_CONF}" ]; then
             for conf in ${OPTEE_CONF}; do
-                oe_runmake -C ${S} O=${B}/${conf} PLATFORM=${OPTEEMACHINE} CFG_EMBED_DTB_SOURCE_FILE=${conf}.dts
+                for soc in ${STM32MP_SOC_NAME}; do
+                    if [ "$(echo ${conf} | grep -c ${soc})" -eq 1 ]; then
+                        soc_extra="$(echo CFG_${soc} | awk '{print toupper($0)}')=y"
+                    fi
+                done
+                oe_runmake -C ${S} O=${B}/${conf} PLATFORM=${OPTEEMACHINE} CFG_EMBED_DTB_SOURCE_FILE=${conf}.dts ${soc_extra}
             done
         else
             oe_runmake -C ${S} O=${B}/out
