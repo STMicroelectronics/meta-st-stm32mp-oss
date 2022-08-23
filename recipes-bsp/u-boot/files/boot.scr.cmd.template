@@ -34,6 +34,8 @@ efidebug boot order 0000
 env set localcmd_efi_bootmgr 'run load_yellow_splash;load mmc 0:4 ${fdt_addr_r} ${fdtfile};if fdt addr ${fdt_addr_r}; then bootefi bootmgr ${fdt_addr_r};else bootefi bootmgr ${fdtcontroladdr};fi'
 env set localcmd_efi_bootmgr_signed 'run load_yellow_splash;load mmc 0:4 0xc4100000 uefi-certificates/PK.auth;setenv -e -nv -bs -rt -at -i 0xc4100000:$filesize PK;load mmc 0:4 0xc4100000 uefi-certificates/KEK.auth;setenv -e -nv -bs -rt -at -i 0xc4100000:$filesize KEK;load mmc 0:4 0xc4100000 uefi-certificates/db.auth;setenv -e -nv -bs -rt -at -i 0xc4100000:$filesize db; run localcmd_efi_bootmgr'
 
+env set defaultcmd 'load mmc 0:4 ${fdt_addr_r} ${fdtfile};setenv bootargs "%KERNEL_CMDLINE%";load mmc 0:4 ${kernel_addr_r} zImage; bootz ${kernel_addr_r} - ${fdt_addr_r}'
+
 # to boot efi signed kernel
 env set localcmd_signed 'efidebug boot next 0001; run localcmd_efi_bootmgr_signed;'
 
