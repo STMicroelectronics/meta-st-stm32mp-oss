@@ -76,12 +76,12 @@ do_compile() {
             fi
 
             # generate fip for trusted
-            oe_runmake -C ${S} AARCH32_SP=sp_min \
-                BUILD_PLAT=${B}/fip-trusted-${dt} \
-                DTB_FILE_NAME=${dt}.dtb \
-                BL33=${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-nodtb-${dt}.bin \
-                BL33_CFG=${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-${dt}.dtb \
-                fip FIP_NAME=fip-${dt}-trusted.bin
+#            oe_runmake -C ${S} AARCH32_SP=sp_min \
+#                BUILD_PLAT=${B}/fip-trusted-${dt} \
+#                DTB_FILE_NAME=${dt}.dtb \
+#                BL33=${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-nodtb-${dt}.bin \
+#                BL33_CFG=${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-${dt}.dtb \
+#                fip FIP_NAME=fip-${dt}-trusted.bin
 
             # generate fip for optee
             oe_runmake -C ${S} AARCH32_SP=optee \
@@ -118,11 +118,11 @@ do_deploy() {
             # BL2 usb
             install -m 644 ${B}/usb${soc_suffix}/tf-a-${dt}-usb.stm32 ${DEPLOYDIR}/arm-trusted-firmware/
 
-            # FIP trusted
-            install -m 644 ${B}/fip-trusted-${dt}/fip-${dt}-trusted.bin ${DEPLOYDIR}/fip/
-            install -m 644 ${B}/fip-trusted-${dt}/bl32.bin ${DEPLOYDIR}/arm-trusted-firmware/bl32-${dt}-trusted.bin
-            install -m 644 ${B}/fip-trusted-${dt}/bl32/bl32.elf ${DEPLOYDIR}/arm-trusted-firmware/debug/bl32-${dt}-trusted.elf
-            install -m 644 ${B}/fip-trusted-${dt}/fdts/${dt}-fw-config.dtb ${DEPLOYDIR}/arm-trusted-firmware/${dt}-fw-config-trusted.dtb
+#            # FIP trusted
+#            install -m 644 ${B}/fip-trusted-${dt}/fip-${dt}-trusted.bin ${DEPLOYDIR}/fip/
+#            install -m 644 ${B}/fip-trusted-${dt}/bl32.bin ${DEPLOYDIR}/arm-trusted-firmware/bl32-${dt}-trusted.bin
+#            install -m 644 ${B}/fip-trusted-${dt}/bl32/bl32.elf ${DEPLOYDIR}/arm-trusted-firmware/debug/bl32-${dt}-trusted.elf
+#            install -m 644 ${B}/fip-trusted-${dt}/fdts/${dt}-fw-config.dtb ${DEPLOYDIR}/arm-trusted-firmware/${dt}-fw-config-trusted.dtb
             # FIP optee
             install -m 644 ${B}/fip-optee-${dt}/fip-${dt}-optee.bin ${DEPLOYDIR}/fip/
             install -m 644 ${B}/fip-optee-${dt}/fdts/${dt}-fw-config.dtb ${DEPLOYDIR}/arm-trusted-firmware/${dt}-fw-config-optee.dtb
