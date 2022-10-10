@@ -11,6 +11,10 @@ SRC_URI = "git://git.denx.de/u-boot.git;nobranch=1"
 SRC_URI:append:stm32mp1common = " \
     file://stm32mp15_disco_defconfig \
     file://stm32mp15_eval_defconfig \
+    file://stm32mp13_disco_defconfig \
+    \
+    file://stm32mp15_disco_scmi_defconfig \
+    file://stm32mp15_eval_scmi_defconfig \
     "
 
 S = "${WORKDIR}/git"
