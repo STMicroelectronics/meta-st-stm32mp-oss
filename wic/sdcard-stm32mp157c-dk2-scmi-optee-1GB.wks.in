@@ -1,0 +1,20 @@
+# short-description: Create SD card image with a boot partition (1GB)
+# long-description: Creates a partitioned SD card image (1GB)
+#
+#  - ----- --------- --------------------
+# | | TFA | fip     |  bootfs | rootfs  |
+#  - ----- --------- --------------------
+# ^ ^     ^         ^         ^        ^
+# | |     |         |         |        |
+# 0 17kB 529kB     4MB       68MB    1024MB
+#
+# Warning: the first stage of boot (here fsbl1, fsbl2, ssbl) MUST be on GPT partition to be detected.
+#
+part fsbl1 --source rawcopy --fstype=ext4 --fsoptions "noauto" --part-name=fsbl1 --sourceparams="file=${DEPLOY_DIR_IMAGE}/arm-trusted-firmware/tf-a-stm32mp157c-dk2-sdcard.stm32" --ondisk mmcblk --part-type 0x8301 --fixed-size 256K --align 17
+part fsbl2 --source rawcopy --fstype=ext4 --fsoptions "noauto" --part-name=fsbl2 --sourceparams="file=${DEPLOY_DIR_IMAGE}/arm-trusted-firmware/tf-a-stm32mp157c-dk2-sdcard.stm32" --ondisk mmcblk --part-type 0x8301 --fixed-size 256K
+part fip   --source rawcopy --fstype=ext4 --fsoptions "noauto" --part-name=fip --sourceparams="file=${DEPLOY_DIR_IMAGE}/fip/fip-stm32mp157c-dk2-scmi-optee.bin" --ondisk mmcblk --part-type 0x8301 --fixed-size 4096K
+
+part /boot --source rootfs --rootfs-dir=${IMAGE_ROOTFS}/boot --ondisk mmcblk0 --fstype=vfat --part-type 0xef00 --label bootfs --use-uuid --align 8192 --size 64M
+part / --source rootfs --ondisk mmcblk --fstype=ext4 --label rootfs --fixed-size 1216M
+
+bootloader --ptable gpt
