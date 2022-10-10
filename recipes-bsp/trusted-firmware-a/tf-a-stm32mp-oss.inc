@@ -95,6 +95,32 @@ do_compile() {
                 fip FIP_NAME=fip-${dt}-optee.bin
         done
     fi
+    # scmi management: need to update only u-boot
+    if [ -n "${TF_A_DEVICETREE}" ]; then
+        for dt in ${TF_A_DEVICETREE}; do
+            soc_extra_opt=""
+            soc_suffix=""
+            if [ -n "${STM32MP_SOC_NAME}" ]; then
+                for soc in ${STM32MP_SOC_NAME}; do
+                    if [ "$(echo ${dt} | grep -c ${soc})" -eq 1 ]; then
+                        soc_extra_opt="$(echo ${soc} | awk '{print toupper($0)}')=1"
+                        soc_suffix="-${soc}"
+                    fi
+                done
+            fi
+            if [ -e ${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-${dt}-scmi.dtb ]; then
+                oe_runmake -C ${S} AARCH32_SP=optee \
+                    BUILD_PLAT=${B}/fip-optee-${dt} \
+                    DTB_FILE_NAME=${dt}.dtb \
+                    BL33=${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-nodtb-${dt}-scmi.bin \
+                    BL33_CFG=${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-${dt}-scmi.dtb \
+                    BL32=${DEPLOY_DIR}/images/${MACHINE}/optee/tee-header_v2-${dt}-optee.bin \
+                    BL32_EXTRA1=${DEPLOY_DIR}/images/${MACHINE}/optee/tee-pager_v2-${dt}-optee.bin \
+                    BL32_EXTRA2=${DEPLOY_DIR}/images/${MACHINE}/optee/tee-pageable_v2-${dt}-optee.bin \
+                    fip FIP_NAME=fip-${dt}-scmi-optee.bin
+            fi
+        done
+    fi
 }
 
 do_deploy() {
@@ -128,6 +154,26 @@ do_deploy() {
             install -m 644 ${B}/fip-optee-${dt}/fdts/${dt}-fw-config.dtb ${DEPLOYDIR}/arm-trusted-firmware/${dt}-fw-config-optee.dtb
         done
     fi
+    # scmi management
+    if [ -n "${TF_A_DEVICETREE}" ]; then
+        for dt in ${TF_A_DEVICETREE}; do
+            soc_extra_opt=""
+            soc_suffix=""
+            if [ -n "${STM32MP_SOC_NAME}" ]; then
+                for soc in ${STM32MP_SOC_NAME}; do
+                    if [ "$(echo ${dt} | grep -c ${soc})" -eq 1 ]; then
+                        soc_extra_opt="$(echo ${soc} | awk '{print toupper($0)}')=1"
+                        soc_suffix="-${soc}"
+                    fi
+                done
+            fi
+            if [ -e ${B}/fip-optee-${dt}/fip-${dt}-scmi-optee.bin ]; then
+                # FIP optee
+                install -m 644 ${B}/fip-optee-${dt}/fip-${dt}-scmi-optee.bin ${DEPLOYDIR}/fip/
+            fi
+        done
+    fi
+
 }
 addtask deploy before do_build after do_compile
 
