@@ -27,6 +27,7 @@ KERNEL_CONFIG_FRAGMENTS += "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '
 KERNEL_CONFIG_FRAGMENTS += "${@bb.utils.contains('COMBINED_FEATURES', 'optee', '${WORKDIR}/fragments/5.x/fragment-04-optee.config', '', d)}"
 KERNEL_CONFIG_FRAGMENTS += "${WORKDIR}/fragments/5.x/fragment-05-modules.config"
 KERNEL_CONFIG_FRAGMENTS += "${@oe.utils.ifelse(d.getVar('KERNEL_SIGN_ENABLE') == '1', '${WORKDIR}/fragments/5.x/fragment-06-signature.config','')} "
+KERNEL_CONFIG_FRAGMENTS += "${@bb.utils.contains('MACHINE_FEATURES', 'nosmp', '${WORKDIR}/fragments/5.x/fragment-06-nosmp.config', '', d)} "
 KERNEL_CONFIG_FRAGMENTS += "${WORKDIR}/fragments/5.x/fragment-09-efi.config"
 
 SRC_URI += "file://5.x/fragment-01-multiv7_cleanup.config;subdir=fragments"
@@ -35,7 +36,9 @@ SRC_URI += "file://5.x/fragment-03-systemd.config;subdir=fragments"
 SRC_URI += "file://5.x/fragment-04-optee.config;subdir=fragments"
 SRC_URI += "file://5.x/fragment-05-modules.config;subdir=fragments"
 SRC_URI += "file://5.x/fragment-06-signature.config;subdir=fragments"
+SRC_URI += "file://5.x/fragment-06-nosmp.config;subdir=fragments"
 SRC_URI += "file://5.x/fragment-09-efi.config;subdir=fragments"
+
 
 # -------------------------------------------------------------
 # Kernel Args
