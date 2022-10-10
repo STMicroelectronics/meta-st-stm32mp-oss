@@ -2,9 +2,9 @@ require optee-test-oss.inc
 # Need to be aligned with the version of OPTEE-OS
 # ------------------------------------------------
 # to be updated
-OPTEE_VERSION = "3.18.0"
+OPTEE_VERSION = "3.19.0"
 
-SRCREV = "d09b43bcc61d740c6ab81392edc1da7ae69e5a5f"
+SRCREV = "eb3d01f1e3c9279948895ea79320587dded5c6da"
 SRC_URI += "file://0001-no-error-deprecated-declarations.patch"
 #SRCREV = "da5282a011b40621a2cf7a296c11a35c833ed91b" # 3.18.0
 #SRCREV = "44a31d02379bd8e50762caa5e1592ad81e3339af" # 3.17.0

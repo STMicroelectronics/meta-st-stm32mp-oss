@@ -4,7 +4,7 @@ HOMEPAGE = "https://github.com/OP-TEE/optee_client"
 LICENSE = "BSD-2-Clause"
 LIC_FILES_CHKSUM = "file://${S}/LICENSE;md5=69663ab153298557a59c67a60a743e5b"
 
-inherit python3native systemd cmake
+inherit python3native systemd cmake pkgconfig
 
 PROVIDES += "optee-client"
 
@@ -20,6 +20,7 @@ PV = "${OPTEE_VERSION}-git${SRCPV}"
 
 SYSTEMD_SERVICE:${PN} = "tee-supplicant.service"
 
+DEPENDS += "util-linux-libuuid"
 
 EXTRA_OECMAKE = " \
     -DCFG_TEE_FS_PARENT_PATH='${localstatedir}/lib/tee' \

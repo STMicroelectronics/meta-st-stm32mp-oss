@@ -34,7 +34,7 @@ OPTEEOUTPUTMACHINE ?= "${MACHINE}"
 
 EXTRA_OEMAKE = "CROSS_COMPILE_core=${HOST_PREFIX} \
                 CROSS_COMPILE_ta_arm64=${HOST_PREFIX} \
-                ${@bb.utils.contains('TUNE_FEATURES', 'aarch64', 'CFG_ARM64_core=y ta-targets=ta_arm64', 'CFG_ARM32_core=y CROSS_COMPILE_ta_arm32=${HOST_PREFIX}', d)} \
+                ${@bb.utils.contains('TUNE_FEATURES', 'aarch64', 'ARCH=arm CFG_ARM64_core=y ta-targets=ta_arm64', 'CFG_ARM32_core=y CROSS_COMPILE_ta_arm32=${HOST_PREFIX}', d)} \
                 NOWERROR=1 \
                 LDFLAGS= \
         "
