@@ -1,18 +1,21 @@
 inherit image_types
 
-STBOOTFS_SIZE ??= "65536"
+STBOOTFS_SIZE ??= "63488"
 
 # thie variable could'nt be changed due to link creation
-STBOOTFS_NAME = "${IMGDEPLOYDIR}/${IMAGE_NAME}.bootfs.vfat"
+STBOOTFS_VFAT_NAME = "${IMGDEPLOYDIR}/${IMAGE_NAME}.bootfs.vfat"
+STBOOTFS_EXT4_NAME = "${IMGDEPLOYDIR}/${IMAGE_NAME}.bootfs.ext4"
 
 STBOOTFS_FILE_REGEXP ?= "\
     boot.scr* \
     mmc0_extlinux/* \
     uefi-certificates/* \
     zImage \
+    zImage-* \
     zImage.signed \
     ubootefi.var \
     uImage \
+    uImage-* \
     splash* \
     stm32mp*.dtb \
     "
@@ -20,6 +23,7 @@ STBOOTFS_FILE_REGEXP ?= "\
 do_image_stbootfs[depends] += " \
         mtools-native:do_populate_sysroot \
         dosfstools-native:do_populate_sysroot \
+        e2fsprogs-native:do_populate_sysroot \
         "
 
 python __anonymous () {
@@ -39,34 +43,53 @@ python __anonymous () {
 }
 
 IMAGE_CMD:stbootfs () {
-    rm -f ${STBOOTFS_NAME}
-
-    # create bootfs filesystem
-    mkfs.vfat -n BOOTFS -S 512 -C ${STBOOTFS_NAME} ${STBOOTFS_SIZE}
-
-    cd ${IMGDEPLOYDIR};
-    mmd -i ${STBOOTFS_NAME} ::/mmc0_extlinux
-    mmd -i ${STBOOTFS_NAME} ::/uefi-certificates
-
+    mkdir -p ${IMAGE_ROOTFS}/../bootfs
+    # populate bootfs directory
+    #   mmc0_extlinux
+    cp -ar  ${IMAGE_ROOTFS}/boot/mmc0_extlinux ${IMAGE_ROOTFS}/../bootfs/
+    #   uefi-certificates
+    cp -ar  ${IMAGE_ROOTFS}/boot/uefi-certificates ${IMAGE_ROOTFS}/../bootfs/
     # special case of extlinux.conf
     if [ -s ${IMAGE_ROOTFS}/boot/extlinux.conf ]; then
-        mmd -i ${STBOOTFS_NAME} ::/extlinux
-        mcopy -i ${STBOOTFS_NAME} -s ${IMAGE_ROOTFS}/extlinux/* ::/extlinux/
+        mkdir -p ${IMAGE_ROOTFS}/../bootfs/extlinux
+        cp -ar ${IMAGE_ROOTFS}/boot/extlinux.conf  ${IMAGE_ROOTFS}/../bootfs/extlinux/
     fi
-
     #populate boot image
     for reg in ${STBOOTFS_FILE_REGEXP}; do
         if (echo $reg | grep -q "/") ; then
             dir=$(dirname $reg)
-            mcopy -i ${STBOOTFS_NAME} -s ${IMAGE_ROOTFS}/boot/$reg ::/$dir
+            cp -r ${IMAGE_ROOTFS}/boot/$reg ${IMAGE_ROOTFS}/../bootfs/$dir
         else
-            mcopy -i ${STBOOTFS_NAME} -s ${IMAGE_ROOTFS}/boot/$reg ::/
+            cp -r ${IMAGE_ROOTFS}/boot/$reg ${IMAGE_ROOTFS}/../bootfs/
         fi
     done
+    cd ${IMAGE_ROOTFS}/../bootfs/
+    rm zImage uImage
+    mv zImage-* zImage
+    mv uImage-* uImage
 
+    rm -f ${STBOOTFS_VFAT_NAME}
+
+    # create bootfs filesystem
+    mkdosfs -n BOOTFS -i 0xFC32FB2C -S 512 -C ${STBOOTFS_VFAT_NAME} ${STBOOTFS_SIZE}
+
+    cd ${IMGDEPLOYDIR};
+    mcopy -i ${STBOOTFS_VFAT_NAME} -s ${IMAGE_ROOTFS}/../bootfs/* ::/
 
     (cd ${IMGDEPLOYDIR};ln -sf ${IMAGE_NAME}.bootfs.vfat ${IMAGE_LINK_NAME}.bootfs.vfat)
     (cd ${IMGDEPLOYDIR};xz -z -c ${IMAGE_NAME}.bootfs.vfat > ${IMAGE_NAME}.bootfs.vfat.xz )
     (cd ${IMGDEPLOYDIR};cp ${IMAGE_NAME}.bootfs.vfat.xz ${IMAGE_LINK_NAME}.bootfs.vfat.xz)
+
+
+    # create ext4
+#     rm -f ${STBOOTFS_EXT4_NAME}
+#     dd if=/dev/zero of=${STBOOTFS_EXT4_NAME} seek=${STBOOTFS_SIZE} count=0 bs=1024
+
+#     mkfs.ext4 -F -i 4096 ${STBOOTFS_EXT4_NAME} -d ${IMAGE_ROOTFS}/../bootfs
+#     fsck.ext4 -pvfD ${STBOOTFS_EXT4_NAME} || [ $? -le 3 ]
+
+#     (cd ${IMGDEPLOYDIR};ln -sf ${IMAGE_NAME}.bootfs.vfat ${IMAGE_LINK_NAME}.bootfs.ext4)
+#     (cd ${IMGDEPLOYDIR};xz -z -c ${IMAGE_NAME}.bootfs.ext4 > ${IMAGE_NAME}.bootfs.ext4.xz )
+#     (cd ${IMGDEPLOYDIR};cp ${IMAGE_NAME}.bootfs.ext4.xz ${IMAGE_LINK_NAME}.bootfs.ext4.xz)
 }
 
