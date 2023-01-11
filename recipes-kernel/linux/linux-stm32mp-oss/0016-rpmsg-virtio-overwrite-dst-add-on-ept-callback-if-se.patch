@@ -1,0 +1,63 @@
+From 8715334d48ab75ca4edfe52f61e40fb229c12ec6 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Wed, 2 Feb 2022 13:53:39 +0100
+Subject: [PATCH] rpmsg: virtio: overwrite dst add on ept callback if set to
+ RPMSG_ADDR_ANY
+
+when a rpmsg channel has been locally created with a destination address
+set to RPMSG_ADDR_ANY, a name service announcement message is sent to
+the remote side. But the destination address is never updated, making it
+impossible to send messages to the remote.
+
+An example of kernel trace observed:
+rpmsg_tty virtio0.rpmsg-tty.29.-1: invalid addr (src 0x1d, dst 0xffffffff)
+
+Implement same strategy than the open-amp library:
+On the reception of the first message, if the destination address is
+RPMSG_ADDR_ANY, then set it to address of the remote endpoint that
+send the message.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+---
+ drivers/rpmsg/virtio_rpmsg_bus.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+index 3ede25b1f2e4..5f16ecf64385 100644
+--- a/drivers/rpmsg/virtio_rpmsg_bus.c
++++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+@@ -708,6 +708,7 @@ static ssize_t virtio_rpmsg_get_mtu(struct rpmsg_endpoint *ept)
+ static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
+ 			     struct rpmsg_hdr *msg, unsigned int len)
+ {
++	struct rpmsg_device *rpdev;
+ 	struct rpmsg_endpoint *ept;
+ 	struct scatterlist sg;
+ 	bool little_endian = virtio_is_little_endian(vrp->vdev);
+@@ -740,12 +741,22 @@ static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
+ 	ept = idr_find(&vrp->endpoints, __rpmsg32_to_cpu(little_endian, msg->dst));
+ 
+ 	/* let's make sure no one deallocates ept while we use it */
+-	if (ept)
++	if (ept) {
+ 		kref_get(&ept->refcount);
++		rpdev = ept->rpdev;
++	}
+ 
+ 	mutex_unlock(&vrp->endpoints_lock);
+ 
+ 	if (ept) {
++		if (rpdev->ept == ept && rpdev->dst == RPMSG_ADDR_ANY) {
++			/*
++			 * First message received from the remote side,
++			 * update channel destination address.
++			 */
++			rpdev->dst = msg->src;
++		}
++
+ 		/* make sure ept->cb doesn't go away while we use it */
+ 		mutex_lock(&ept->cb_lock);
+ 
+-- 
+2.25.1
+
