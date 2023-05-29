@@ -32,21 +32,21 @@ declare -A FLASHLAYOUT_data
 
 SDCARD_TOKEN=mmc0
 
-# Size of 2GB
-#DEFAULT_RAW_SIZE=2048
-# Size of 1.5GB
-DEFAULT_RAW_SIZE=1536
+# Size of 5GB
+DEFAULT_RAW_SIZE=${SDCARD_SIZE:-5120}
 
 # size of 768MB
-DEFAULT_ROOTFS_PARTITION_SIZE=768432
-# size of 1024MB
-#DEFAULT_ROOTFS_PARTITION_SIZE=1232896
-
+DEFAULT_ROOTFS_PARTITION_SIZE=752640
 
 # 32 MB of Padding on B
 DEFAULT_PADDING_SIZE=33554432
 
 DEFAULT_SDCARD_PARTUUID=e91c4e10-16e6-4c0e-bd0e-77becf4a3582
+DEFAULT_FIP_TYPEUUID=19d5df83-11b0-457b-be2c-7559c13142a5
+DEFAULT_FIP_A_PARTUUID=4fd84c93-54ef-463f-a7ef-ae25ff887087
+DEFAULT_FIP_B_PARTUUID=09c54952-d5bf-45af-acee-335303766fb3
+DEFAULT_FWU_MDATA_TYPEUUID=8a7a84a0-8387-40f6-ab41-a8b9a5a60d23
+DEFAULT_UBOOT_ENV_TYPEUUID=3de21764-95bd-54bd-a5c3-4abe786f38a8
 
 # Columns name on FLASHLAYOUT_data
 COL_SELECTED_OPT=0
@@ -76,11 +76,7 @@ else
 fi
 
 _COMPRESS_RAW_IMAGE=0
-
-usage() {
-	echo "Usage: $0 <flashlayout>"
-	exit 0
-}
+_FORCE_ROOTFS_SIZE=0
 
 debug() {
 	if [ "$DEBUG" ];
@@ -115,12 +111,12 @@ function selection_test() {
 	_result=1
 	_select=$1
 	shift
-	debug "selection_test: ref=$_select"
-	while test $# != 1
+	#debug "selection_test: ref=$_select"
+	while test $# != 0
 	do
-		debug "selection_test: test between <${_select}> and <$1>"
+		#debug "selection_test: test between <${_select}> and <$1>"
 		if [ "${_select}" == "$1" ]; then
-			debug "selection_test: test TRUE"
+			#debug "selection_test: test TRUE"
 			_result=0
 			break;
 		fi
@@ -236,6 +232,8 @@ function get_last_image_path() {
 			echo ""
 			exit 0
 		fi
+	else
+		FLASHLAYOUT_prefix_image_path="."
 	fi
 }
 
@@ -338,6 +336,16 @@ function generate_gpt_partition_table_from_flash_layout() {
 			extrafs_param=" -u $j:${DEFAULT_SDCARD_PARTUUID}"
 			display_info="$display_info $j"
 			;;
+		fip-a*)
+			# add fip-a PARTUUID flags
+			extrafs_param=" -u $j:${DEFAULT_FIP_A_PARTUUID}"
+			display_info="$display_info  $j"
+			;;
+		fip-b*)
+			# add fip-b PARTUUID flags
+			extrafs_param=" -u $j:${DEFAULT_FIP_B_PARTUUID}"
+			display_info="$display_info  $j"
+			;;
 		*)
 			extrafs_param=""
 			;;
@@ -374,11 +382,13 @@ function generate_gpt_partition_table_from_flash_layout() {
 			next_offset_b=$((16#$next_offset))
 			if [ "$partName" == "rootfs" ];
 			then
-				#force the size of rootfs parition to 768MB
-				new_next_partition_offset_b=$((offset_b + 1024*DEFAULT_ROOTFS_PARTITION_SIZE))
-				next_offset_b=$new_next_partition_offset_b
+				if [ ${_FORCE_ROOTFS_SIZE} -eq 1 ]; then
+					#force the size of rootfs parition to 768MB
+					new_next_partition_offset_b=$((offset_b + 1024*DEFAULT_ROOTFS_PARTITION_SIZE))
+					next_offset_b=$new_next_partition_offset_b
 
-				move_partition_offset $((i+1)) $new_next_partition_offset_b
+					move_partition_offset $((i+1)) $new_next_partition_offset_b
+				fi
 				index_of_rootfs=$i
 			fi
 
@@ -396,8 +406,8 @@ function generate_gpt_partition_table_from_flash_layout() {
 			next_offset=$((next_offset -1))
 			if [ $next_offset -eq -1 ];
 			then
-			next_offset=" "
-			next_offset_b="0"
+				next_offset=" "
+				next_offset_b="0"
 			fi
 		else
 			next_offset=" "
@@ -437,24 +447,26 @@ function generate_gpt_partition_table_from_flash_layout() {
 				then
 					if [ "$partName" == "rootfs" ];
 					then
-						echo "[WARNING]: IMAGE TOO BIG [$partName:$bin2flash $image_size B [requested $partition_size B]"
-						echo "[WARNING]: try to move last partition"
-						# rootfs are too big for the partition, we increase the size of
-						# partition of real rootfs image size + DEFAULT_PADDING_SIZE
-						new_next_partition_offset_b=$((offset_b + image_size + DEFAULT_PADDING_SIZE))
+						if [ ${_FORCE_ROOTFS_SIZE} -eq 1 ]; then
+							echo "[WARNING]: IMAGE TOO BIG [$partName:$bin2flash $image_size B [requested $partition_size B]"
+							echo "[WARNING]: try to move last partition"
+							# rootfs are too big for the partition, we increase the size of
+							# partition of real rootfs image size + DEFAULT_PADDING_SIZE
+							new_next_partition_offset_b=$((offset_b + image_size + DEFAULT_PADDING_SIZE))
 
-						move_partition_offset $((i+1)) $new_next_partition_offset_b
+							move_partition_offset $((i+1)) $new_next_partition_offset_b
 
-						if [ $new_next_partition_offset_b -gt $((DEFAULT_RAW_SIZE * 1024*1024)) ]
-						then
-							echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-							echo "[ERROR]: IMAGE TOO BIG [$partName:$bin2flash $image_size_in_mb MB [requested $partition_size B]"
-							echo "[ERROR]: IMAGE + OFFSET of rootfs partition are superior of SDCARD size ($DEFAULT_RAW_SIZE)"
-							echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-							exit 1
+							if [ $new_next_partition_offset_b -gt $((DEFAULT_RAW_SIZE * 1024*1024)) ]
+							then
+								echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+								echo "[ERROR]: IMAGE TOO BIG [$partName:$bin2flash $image_size_in_mb MB [requested $partition_size B]"
+								echo "[ERROR]: IMAGE + OFFSET of rootfs partition are superior of SDCARD size ($DEFAULT_RAW_SIZE)"
+								echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+								exit 1
+							fi
+							next_offset=$((2 * new_next_partition_offset_b / 1024))
+							next_offset=$((next_offset -1))
 						fi
-						next_offset=$((2 * new_next_partition_offset_b / 1024))
-						next_offset=$((next_offset -1))
 					else
 						echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 						echo "[ERROR]: IMAGE TOO BIG [$partName:$bin2flash $image_size_in_mb MB [requested $partition_size B]"
@@ -466,7 +478,6 @@ function generate_gpt_partition_table_from_flash_layout() {
 				if [ $p -eq $((number_of_partition -1)) ];
 				then
 					temp_end_offset_b=$((offset_b + image_size))
-
 					if [ $temp_end_offset_b -gt $((DEFAULT_RAW_SIZE * 1024*1024)) ];
 					then
 						echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -481,13 +492,31 @@ function generate_gpt_partition_table_from_flash_layout() {
 					# Linux reserved: 0x8301
 					gpt_code="8301"
 					;;
-				System)
+				FIP)
+					# FIP specific TYPE UUID
+					gpt_code=$DEFAULT_FIP_TYPEUUID
+					;;
+				FWU_MDATA)
+					# TF-A firmware update metadata TYPE UUID
+					gpt_code=$DEFAULT_FWU_MDATA_TYPEUUID
+					;;
+				System|FileSystem) #FileSystem
+					# Linux File system: 0x8300
+					gpt_code="8300"
+					;;
+				ESP)
 					# ESP
 					gpt_code="ef00"
 					;;
-				*) #FileSystem
-					# Linux File system: 0x8300
-					gpt_code="8300"
+				ENV)
+					# U-Boot enviromnent
+					gpt_code=$DEFAULT_UBOOT_ENV_TYPEUUID
+					;;
+				*)
+					echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+					echo "[ERROR]: invalid partition type:  $partType for $partName"
+					echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+					exit 1
 					;;
 				esac
 
@@ -574,14 +603,13 @@ function populate_gpt_partition_table_from_flash_layout() {
 					j=$((j+1))
 				fi
 			fi
-
 		fi
 	done
 }
 
 # ----------------------------------------
 # ----------------------------------------
-function print_shema_on_infofile() {
+function print_schema_on_infofile() {
 	local j=1
 	local i=1
 	# print schema of partition
@@ -760,6 +788,31 @@ function print_populate_on_infofile() {
 	done
 }
 
+function print_mount_on_infofile() {
+	local j=1
+	for i in $(seq 0 $FLASHLAYOUT_number_of_line)
+	do
+		selected=${FLASHLAYOUT_data[$i,$COL_SELECTED_OPT]}
+		ip=${FLASHLAYOUT_data[$i,$COL_IP]}
+		partName=${FLASHLAYOUT_data[$i,$COL_PARTNAME]}
+		partType=${FLASHLAYOUT_data[$i,$COL_PARTYPE]}
+		bin2flash=${FLASHLAYOUT_data[$i,$COL_BIN2FLASH]}
+		if [ "$ip" == "$SDCARD_TOKEN" ];
+		then
+			if selection_test $selected "P" "E" "PD" "DP" "PED";
+			then
+				if selection_test $partType "System" "FileSystem";
+				then
+					echo "- Mount manually partition $partName (/dev/${DEFAULT_DEVICE_PART}$j)" >> "$FLASHLAYOUT_infoname"
+					echo "    udiskctl mount -b /dev/disk/by-partlabel/$partName" >> "$FLASHLAYOUT_infoname"
+					echo "" >> "$FLASHLAYOUT_infoname"
+				fi
+				j=$((j+1))
+			fi
+		fi
+	done
+}
+
 function create_info() {
 
 cat > "$FLASHLAYOUT_infoname"  << EOF
@@ -772,7 +825,7 @@ This file describe How to update manually the partition of SDCARD:
 ------------------------------
 
 EOF
-print_shema_on_infofile
+print_schema_on_infofile
 
 cat >> "$FLASHLAYOUT_infoname"  << EOF
 
@@ -784,7 +837,15 @@ print_populate_on_infofile
 
 cat >> "$FLASHLAYOUT_infoname"  << EOF
 
-3. How to update the kernel/devicetree
+3. How to mount manually each partition
+---------------------------------
+EOF
+
+print_mount_on_infofile
+
+cat >> "$FLASHLAYOUT_infoname"  << EOF
+
+4. How to update the kernel/devicetree
 --------------------------------------
 The kernel and devicetree are present on "boot" partition.
 To change kernel and devicetree, you can copy the file on this partitions:
@@ -823,6 +884,15 @@ function print_info() {
 	echo "     sdX if it's a device dedicated to receive the raw image "
 	echo "          (where X can be a, b, c, d, e)"
 	echo ""
+	echo "To mount bootfs partition:"
+	echo "     udisksctl mount -b /dev/disk/by-partlabel/bootfs"
+	echo ""
+	echo "After the dd command you can verify if copy are correctly done and partitions take into account"
+	echo "     sgdisk /dev/${DEFAULT_DEVICE} -p"
+	echo "     sgdisk /dev/${DEFAULT_DEVICE} -v"
+	echo "if '-v' command indicate a problem, please execute the following command:"
+	echo "     sgdisk /dev/${DEFAULT_DEVICE} -e"
+	echo ""
 	echo "###########################################################################"
 	echo "###########################################################################"
 }
@@ -850,8 +920,20 @@ function print_warning() {
 function usage() {
 	echo ""
 	echo "Help:"
-	echo "   $0 <FlashLayout file>"
+	echo "   $0 [-h|--help] [--compress] <FlashLayout file>"
 	echo ""
+	echo "   -h    :		this help"
+	echo "   --help:		this help"
+	echo "   --compress:		compress the raw image generated"
+	echo "   --force-rootfs:	force to use predefined rootfs size ($((DEFAULT_ROOTFS_PARTITION_SIZE / 1024)) MB)"
+	echo ""
+	echo "By setting SDCARD_SIZE on shell environment or calling the script with it you can limit the size of RAW sdcard"
+	echo "SDCARD_SIZE=<value on MB>"
+	echo "ex.: SDCARD_SIZE=2048 ./script/create_sdcard_from_flashlayout.sh <flashlayout>"
+	echo " this exemple limit the size of sdcard to 2GB (2048MB)"
+	echo ""
+	echo "By setting DEVICE on shell environment or calling the script with it you can customize the command"
+	echo "ex.: DEVICE=sdb ./script/create_sdcard_from_flashlayout.sh <flashlayout>"
 	exit 1
 }
 # ------------------
@@ -859,24 +941,54 @@ function usage() {
 # ------------------
 
 # check opt args
-while test $# != 1
-do
-	case "$1" in
-	--help)
+if [ $# -gt 1 ]; then
+	while test $# != 1
+	do
+		case "$1" in
+		--help|-h)
+			usage
+			return 0
+			;;
+		--compress)
+			_COMPRESS_RAW_IMAGE=1
+			;;
+		--force-rootfs)
+			_FORCE_ROOTFS_SIZE=1
+			;;
+		-*)
+			echo "Wrong parameter: $1"
+			usage
+			return 1
+			;;
+		esac
+		shift
+	done
+else
+	if [ $# -eq 1 ];
+	then
+		case "$1" in
+		--help|-h)
+			usage
+			return 0
+			;;
+		--compress)
+			_COMPRESS_RAW_IMAGE=1
+			;;
+		--force-rootfs)
+			_FORCE_ROOTFS_SIZE=1
+			;;
+		-*)
+			echo "Wrong parameter: $1"
+			usage
+			return 1
+			;;
+		esac
+	else
+		echo "[ERROR]: bad number of parameters"
+		echo ""
 		usage
-		return 0
-		;;
-	--compress)
-		_COMPRESS_RAW_IMAGE=1
-		;;
-	-*)
-		echo "Wrong parameter: $1"
-		usage
-		return 1
-		;;
-	esac
-	shift
-done
+	fi
+fi
 
 if [ $# -ne 1 ];
 then
