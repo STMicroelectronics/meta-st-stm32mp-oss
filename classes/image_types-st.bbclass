@@ -5,19 +5,19 @@ STBOOTFS_SIZE ??= "63488"
 # thie variable could'nt be changed due to link creation
 STBOOTFS_VFAT_NAME = "${IMGDEPLOYDIR}/${IMAGE_NAME}.bootfs.vfat"
 STBOOTFS_EXT4_NAME = "${IMGDEPLOYDIR}/${IMAGE_NAME}.bootfs.ext4"
+STBOOTFS_HAVE_UBIFS = "${@bb.utils.contains('IMAGE_FSTYPES','ubifs','1','0',d)}"
 
 STBOOTFS_FILE_REGEXP ?= "\
     boot.scr* \
     mmc0_extlinux/* \
     uefi-certificates/* \
-    zImage \
-    zImage-* \
+    zImage* \
     zImage.signed \
     ubootefi.var \
-    uImage \
-    uImage-* \
+    uImage* \
     splash* \
     stm32mp*.dtb \
+    st-image-resize-initrd \
     "
 
 do_image_stbootfs[depends] += " \
@@ -46,9 +46,19 @@ IMAGE_CMD:stbootfs () {
     mkdir -p ${IMAGE_ROOTFS}/../bootfs
     # populate bootfs directory
     #   mmc0_extlinux
-    cp -ar  ${IMAGE_ROOTFS}/boot/mmc0_extlinux ${IMAGE_ROOTFS}/../bootfs/
+    if [ -d ${IMAGE_ROOTFS}/boot/mmc0_extlinux ]; then
+        cp -ar  ${IMAGE_ROOTFS}/boot/mmc0_extlinux ${IMAGE_ROOTFS}/../bootfs/
+    fi
+    if [ -d ${IMAGE_ROOTFS}/boot/mmc1_extlinux ]; then
+        cp -ar  ${IMAGE_ROOTFS}/boot/mmc1_extlinux ${IMAGE_ROOTFS}/../bootfs/
+    fi
+    if [ -d ${IMAGE_ROOTFS}/boot/nand0_extlinux ]; then
+        cp -ar  ${IMAGE_ROOTFS}/boot/nand0_extlinux ${IMAGE_ROOTFS}/../bootfs/
+    fi
     #   uefi-certificates
-    cp -ar  ${IMAGE_ROOTFS}/boot/uefi-certificates ${IMAGE_ROOTFS}/../bootfs/
+    if [ -d ${IMAGE_ROOTFS}/boot/uefi-certificates ]; then
+        cp -ar  ${IMAGE_ROOTFS}/boot/uefi-certificates ${IMAGE_ROOTFS}/../bootfs/
+    fi
     # special case of extlinux.conf
     if [ -s ${IMAGE_ROOTFS}/boot/extlinux.conf ]; then
         mkdir -p ${IMAGE_ROOTFS}/../bootfs/extlinux
@@ -56,22 +66,43 @@ IMAGE_CMD:stbootfs () {
     fi
     #populate boot image
     for reg in ${STBOOTFS_FILE_REGEXP}; do
-        if (echo $reg | grep -q "/") ; then
-            dir=$(dirname $reg)
-            cp -r ${IMAGE_ROOTFS}/boot/$reg ${IMAGE_ROOTFS}/../bootfs/$dir
-        else
-            cp -r ${IMAGE_ROOTFS}/boot/$reg ${IMAGE_ROOTFS}/../bootfs/
+        bbnote "copy $reg"
+        if [ -e "$reg" ]; then
+            if (echo $reg | grep -q "/") ; then
+                dir=$(dirname $reg)
+                cp -r ${IMAGE_ROOTFS}/boot/$reg ${IMAGE_ROOTFS}/../bootfs/$dir
+            else
+                cp -r ${IMAGE_ROOTFS}/boot/$reg ${IMAGE_ROOTFS}/../bootfs/
+            fi
         fi
     done
     cd ${IMAGE_ROOTFS}/../bootfs/
-    rm zImage uImage
-    mv zImage-* zImage
-    mv uImage-* uImage
+    # use only zImage file
+    rm -f uImage*
+    if [ -h zImage -a -e zImage -a -h zImage  ]; then
+        rm zImage
+    fi
+#     if [ -h uImage -a -e uImage -a -h uImage]; then
+#         rm uImage
+#     fi
+
+    zImage_name=$(ls -1 zImage-* | grep -v rt| head -n 1)
+    if [ -n "$zImage_name" ]; then
+        bbnote "move  $zImage_name to zImage"
+        mv $zImage_name zImage
+    fi
+#     uImage_name=$(ls -1 uImage-* | grep -v rt| head -n 1)
+#     if [ -n "$uImage_name" ]; then
+#         bbnote "move $uImage_name to zImage"
+#         mv $uImage_name zImage
+#     fi
+    cd ..
 
     rm -f ${STBOOTFS_VFAT_NAME}
 
     # create bootfs filesystem
-    mkdosfs -n BOOTFS -i 0xFC32FB2C -S 512 -C ${STBOOTFS_VFAT_NAME} ${STBOOTFS_SIZE}
+    #mkdosfs -n BOOTFS -i 0xFC32FB2C -S 512 -F 32 -C ${STBOOTFS_VFAT_NAME} ${STBOOTFS_SIZE}
+    mkdosfs -v -n bootfs -S 512 -F 32 -C ${STBOOTFS_VFAT_NAME} ${STBOOTFS_SIZE}
 
     cd ${IMGDEPLOYDIR};
     mcopy -i ${STBOOTFS_VFAT_NAME} -s ${IMAGE_ROOTFS}/../bootfs/* ::/
@@ -79,7 +110,6 @@ IMAGE_CMD:stbootfs () {
     (cd ${IMGDEPLOYDIR};ln -sf ${IMAGE_NAME}.bootfs.vfat ${IMAGE_LINK_NAME}.bootfs.vfat)
     (cd ${IMGDEPLOYDIR};xz -z -c ${IMAGE_NAME}.bootfs.vfat > ${IMAGE_NAME}.bootfs.vfat.xz )
     (cd ${IMGDEPLOYDIR};cp ${IMAGE_NAME}.bootfs.vfat.xz ${IMAGE_LINK_NAME}.bootfs.vfat.xz)
-
 
     # create ext4
 #     rm -f ${STBOOTFS_EXT4_NAME}
@@ -91,5 +121,10 @@ IMAGE_CMD:stbootfs () {
 #     (cd ${IMGDEPLOYDIR};ln -sf ${IMAGE_NAME}.bootfs.vfat ${IMAGE_LINK_NAME}.bootfs.ext4)
 #     (cd ${IMGDEPLOYDIR};xz -z -c ${IMAGE_NAME}.bootfs.ext4 > ${IMAGE_NAME}.bootfs.ext4.xz )
 #     (cd ${IMGDEPLOYDIR};cp ${IMAGE_NAME}.bootfs.ext4.xz ${IMAGE_LINK_NAME}.bootfs.ext4.xz)
+
+    # create ubifs
+    if [ "${STBOOTFS_HAVE_UBIFS}" = "1" ]; then
+        mkfs.ubifs -r ${IMAGE_ROOTFS}/../bootfs -o ${IMGDEPLOYDIR}/${IMAGE_NAME}.bootfs.ubifs ${MKUBIFS_ARGS}
+    fi
 }
 
