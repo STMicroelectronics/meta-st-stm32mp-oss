@@ -17,9 +17,6 @@ SRC_URI = " \
     \
     file://asound-stm32mp15yx-ev.state  \
     file://asound-stm32mp15yx-dk.state  \
-    \
-    file://system-generator-alsa-states \
-    file://system-generator-alsa-conf   \
     "
 
 S = "${WORKDIR}"
@@ -46,17 +43,6 @@ do_install() {
             ln -sf asound-stm32mp15yx-dk.state asound-stm32mp15$n$p-dk.state
         done
     done
-
-    # Enable systemd automatic selection
-    if ${@bb.utils.contains('DISTRO_FEATURES','systemd','true','false',d)}; then
-        install -d ${D}${systemd_unitdir}/system-generators/
-        if [ -f ${WORKDIR}/system-generator-alsa-states ]; then
-            install -m 0755 ${WORKDIR}/system-generator-alsa-states ${D}${systemd_unitdir}/system-generators/
-        fi
-        if [ -f ${WORKDIR}/system-generator-alsa-conf ]; then
-            install -m 0755 ${WORKDIR}/system-generator-alsa-conf ${D}${systemd_unitdir}/system-generators/
-        fi
-    fi
 }
 
-FILES:${PN} = "${localstatedir}/lib/alsa/*.state ${systemd_unitdir}/system-generators ${sysconfdir}/*.conf "
+FILES:${PN} = "${localstatedir}/lib/alsa/*.state ${sysconfdir}/*.conf "
