@@ -1,10 +1,10 @@
-SUMMARY = "Cert_create & Fiptool for fip generation for Trusted Firmware-A"
+tkaSUMMARY = "Cert_create & Fiptool for fip generation for Trusted Firmware-A"
 LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://license.rst;md5=1dd070c98a281d18d9eefd938729b031"
 
 SRC_URI = "git://github.com/ARM-software/arm-trusted-firmware.git;protocol=https;nobranch=1"
-#SRCREV corresponds to v2.7
-SRCREV = "35f4c7295bafeb32c8bcbdfb6a3f2e74a57e732b"
+#SRCREV corresponds to v2.9
+SRCREV = "d3e71ead6ea5bc3555ac90a446efec84ef6c6122"
 
 DEPENDS += "dtc-native openssl"
 
