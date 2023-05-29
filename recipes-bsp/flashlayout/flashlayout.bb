@@ -4,9 +4,15 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/MIT;md5=0835ad
 
 SRC_URI = " \
     file://FlashLayout_sdcard_stm32mp157c-dk2-optee.tsv.in \
-    file://FlashLayout_sdcard_stm32mp157c-ev1-optee.tsv.in \
     file://FlashLayout_sdcard_stm32mp157c-dk2-raw.tsv.in \
+    \
+    file://FlashLayout_sdcard_stm32mp157c-ev1-optee.tsv.in \
     file://FlashLayout_sdcard_stm32mp157c-ev1-raw.tsv.in \
+    file://FlashLayout_emmc_stm32mp157c-ev1-optee.tsv.in \
+    file://FlashLayout_nand_stm32mp157c-ev1-optee.tsv.in \
+    file://FlashLayout_nor-sdcard_stm32mp157c-ev1-optee.tsv.in \
+    file://FlashLayout_sdcard_fwup_stm32mp157c-ev1-optee.tsv.in \
+    file://FlashLayout_emmc_fwup_stm32mp157c-ev1-optee.tsv.in \
     \
     file://FlashLayout_sdcard_stm32mp135f-dk-optee.tsv.in \
     file://FlashLayout_sdcard_stm32mp135f-dk-raw.tsv.in \
@@ -31,7 +37,6 @@ do_deploy:stm32mp15-disco-oss() {
     sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-dk2-optee.tsv.in > ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-dk2-optee.tsv
     sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-dk2-raw.tsv.in > ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-dk2-raw.tsv
 
-
     install -m 0644 ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-dk2-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
     install -m 0644 ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-dk2-raw.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
 }
@@ -42,8 +47,22 @@ do_deploy:stm32mp15-eval-oss() {
     sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-optee.tsv.in > ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-optee.tsv
     sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-raw.tsv.in > ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-raw.tsv
 
+    sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_emmc_stm32mp157c-ev1-optee.tsv.in > ${WORKDIR}/FlashLayout_emmc_stm32mp157c-ev1-optee.tsv
+    sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_nand_stm32mp157c-ev1-optee.tsv.in > ${WORKDIR}/FlashLayout_nand_stm32mp157c-ev1-optee.tsv
+    sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_nor-sdcard_stm32mp157c-ev1-optee.tsv.in > ${WORKDIR}/FlashLayout_nor-sdcard_stm32mp157c-ev1-optee.tsv
+
+    sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_sdcard_fwup_stm32mp157c-ev1-optee.tsv.in > ${WORKDIR}/FlashLayout_sdcard_fwup_stm32mp157c-ev1-optee.tsv
+    sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_emmc_fwup_stm32mp157c-ev1-optee.tsv.in > ${WORKDIR}/FlashLayout_emmc_fwup_stm32mp157c-ev1-optee.tsv
+
     install -m 0644 ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
     install -m 0644 ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-raw.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
+
+    install -m 0644 ${WORKDIR}/FlashLayout_emmc_stm32mp157c-ev1-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
+    install -m 0644 ${WORKDIR}/FlashLayout_nand_stm32mp157c-ev1-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
+    install -m 0644 ${WORKDIR}/FlashLayout_nor-sdcard_stm32mp157c-ev1-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
+
+    install -m 0644 ${WORKDIR}/FlashLayout_sdcard_fwup_stm32mp157c-ev1-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
+    install -m 0644 ${WORKDIR}/FlashLayout_emmc_fwup_stm32mp157c-ev1-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
 }
 
 do_deploy:stm32mp13-disco-oss() {
@@ -71,6 +90,12 @@ do_deploy:stm32mp1-disco-oss() {
     sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-dk2-scmi-optee.tsv.in > ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-dk2-scmi-optee.tsv
     sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-scmi-optee.tsv.in > ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-scmi-optee.tsv
 
+    sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_emmc_stm32mp157c-ev1-optee.tsv.in > ${WORKDIR}/FlashLayout_emmc_stm32mp157c-ev1-optee.tsv
+    sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_nand_stm32mp157c-ev1-optee.tsv.in > ${WORKDIR}/FlashLayout_nand_stm32mp157c-ev1-optee.tsv
+    sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_nor-sdcard_stm32mp157c-ev1-optee.tsv.in > ${WORKDIR}/FlashLayout_nor-sdcard_stm32mp157c-ev1-optee.tsv
+
+    sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_sdcard_fwup_stm32mp157c-ev1-optee.tsv.in > ${WORKDIR}/FlashLayout_sdcard_fwup_stm32mp157c-ev1-optee.tsv
+    sed "s/#MACHINE#/${MACHINE}/g" ${WORKDIR}/FlashLayout_emmc_fwup_stm32mp157c-ev1-optee.tsv.in > ${WORKDIR}/FlashLayout_emmc_fwup_stm32mp157c-ev1-optee.tsv
 
     install -m 0644 ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
     #install -m 0644 ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-raw.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
@@ -81,6 +106,13 @@ do_deploy:stm32mp1-disco-oss() {
 
     install -m 0644 ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-ev1-scmi-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
     install -m 0644 ${WORKDIR}/FlashLayout_sdcard_stm32mp157c-dk2-scmi-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
+
+    install -m 0644 ${WORKDIR}/FlashLayout_emmc_stm32mp157c-ev1-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
+    install -m 0644 ${WORKDIR}/FlashLayout_nand_stm32mp157c-ev1-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
+    install -m 0644 ${WORKDIR}/FlashLayout_nor-sdcard_stm32mp157c-ev1-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
+
+    install -m 0644 ${WORKDIR}/FlashLayout_sdcard_fwup_stm32mp157c-ev1-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
+    install -m 0644 ${WORKDIR}/FlashLayout_emmc_fwup_stm32mp157c-ev1-optee.tsv ${DEPLOYDIR}/flashlayout_st-image-weston/optee/
 }
 
 do_deploy() {
