@@ -23,18 +23,18 @@ env set boot_m4fw 'rproc init; rproc load 0 ${m4fw_addr} ${filesize}; rproc star
 env set scan_m4fw 'if test -e ${devtype} ${devnum}:${distro_bootpart} ${m4fw_name};then echo Found M4 FW $m4fw_name; if load ${devtype} ${devnum}:${distro_bootpart} ${m4fw_addr} ${m4fw_name}; then run boot_m4fw; fi; fi;'
 
 # load specific yellow splash screen
-env set load_yellow_splash 'load mmc 0:4 0xc4300000 splash_yellow.bmp; bmp display 0xc4300000;'
+env set load_yellow_splash 'load ${devtype} ${devnum}:${distro_bootpart} 0xc4300000 splash_yellow.bmp; bmp display 0xc4300000;'
 # for efi boot
-env set localcmd_efi_basci 'run load_yellow_splash; setenv bootargs "%KERNEL_CMDLINE%";load mmc 0:4 ${fdt_addr_r} ${fdtfile};load mmc 0:4 ${kernel_addr_r} zImage;if fdt addr ${fdt_addr_r}; then echo "Using ${fdtfile}"; bootefi ${kernel_addr_r} ${fdt_addr_r};else bootefi ${kernel_addr_r} ${fdtcontroladdr};fi'
-efidebug boot add -b 0000 'kernel' mmc 0:4 zImage -s 'console=ttySTM0,115200 rootwait root=PARTLABEL=rootfs bootmgr0'
-efidebug boot add -b 0001 'signkernel' mmc 0:4 zImage.signed -s 'console=ttySTM0,115200 rootwait root=PARTLABEL=rootfs bootmgr3-signed'
-efidebug boot add -b 0002 'rtkernel' mmc 0:4 zImage-rt -s 'console=ttySTM0,115200 rootwait root=PARTLABEL=rootfs bootmgr1'
+env set localcmd_efi_basci 'run load_yellow_splash; setenv bootargs "%KERNEL_CMDLINE%";load ${devtype} ${devnum}:${distro_bootpart} ${fdt_addr_r} ${fdtfile};load ${devtype} ${devnum}:${distro_bootpart} ${kernel_addr_r} zImage;if fdt addr ${fdt_addr_r}; then echo "Using ${fdtfile}"; bootefi ${kernel_addr_r} ${fdt_addr_r};else bootefi ${kernel_addr_r} ${fdtcontroladdr};fi'
+efidebug boot add -b 0000 'kernel' ${devtype} ${devnum}:${distro_bootpart} zImage -s 'console=ttySTM0,115200 rootwait root=PARTLABEL=rootfs bootmgr0'
+efidebug boot add -b 0001 'signkernel' ${devtype} ${devnum}:${distro_bootpart} zImage.signed -s 'console=ttySTM0,115200 rootwait root=PARTLABEL=rootfs bootmgr3-signed'
+efidebug boot add -b 0002 'rtkernel' ${devtype} ${devnum}:${distro_bootpart} zImage-rt -s 'console=ttySTM0,115200 rootwait root=PARTLABEL=rootfs bootmgr1'
 efidebug boot order 0000
 
-env set localcmd_efi_bootmgr 'run load_yellow_splash;load mmc 0:4 ${fdt_addr_r} ${fdtfile};if fdt addr ${fdt_addr_r}; then bootefi bootmgr ${fdt_addr_r};else bootefi bootmgr ${fdtcontroladdr};fi'
-env set localcmd_efi_bootmgr_signed 'run load_yellow_splash;load mmc 0:4 0xc4100000 uefi-certificates/PK.auth;setenv -e -nv -bs -rt -at -i 0xc4100000:$filesize PK;load mmc 0:4 0xc4100000 uefi-certificates/KEK.auth;setenv -e -nv -bs -rt -at -i 0xc4100000:$filesize KEK;load mmc 0:4 0xc4100000 uefi-certificates/db.auth;setenv -e -nv -bs -rt -at -i 0xc4100000:$filesize db; run localcmd_efi_bootmgr'
+env set localcmd_efi_bootmgr 'run load_yellow_splash;load ${devtype} ${devnum}:${distro_bootpart} ${fdt_addr_r} ${fdtfile};if fdt addr ${fdt_addr_r}; then bootefi bootmgr ${fdt_addr_r};else bootefi bootmgr ${fdtcontroladdr};fi'
+env set localcmd_efi_bootmgr_signed 'run load_yellow_splash;load ${devtype} ${devnum}:${distro_bootpart} 0xc4100000 uefi-certificates/PK.auth;setenv -e -nv -bs -rt -at -i 0xc4100000:$filesize PK;load ${devtype} ${devnum}:${distro_bootpart} 0xc4100000 uefi-certificates/KEK.auth;setenv -e -nv -bs -rt -at -i 0xc4100000:$filesize KEK;load ${devtype} ${devnum}:${distro_bootpart} 0xc4100000 uefi-certificates/db.auth;setenv -e -nv -bs -rt -at -i 0xc4100000:$filesize db; run localcmd_efi_bootmgr'
 
-env set defaultcmd 'load mmc 0:4 ${fdt_addr_r} ${fdtfile};setenv bootargs "%KERNEL_CMDLINE%";load mmc 0:4 ${kernel_addr_r} zImage; bootz ${kernel_addr_r} - ${fdt_addr_r}'
+env set defaultcmd 'load ${devtype} ${devnum}:${distro_bootpart} ${fdt_addr_r} ${fdtfile};setenv bootargs "%KERNEL_CMDLINE%";load ${devtype} ${devnum}:${distro_bootpart} ${kernel_addr_r} zImage; bootz ${kernel_addr_r} - ${fdt_addr_r}'
 
 # to boot efi signed kernel
 env set localcmd_signed 'efidebug boot next 0001; run localcmd_efi_bootmgr_signed;'
@@ -77,8 +77,16 @@ env delete bootfile
 # save the boot config the 2nd boot (boot_prefixes/boot_extlinux)
 env save
 
-# start the correct exlinux.conf
-run bootcmd_${target}
+if test ${target} = ubifs0; then
+    # avoid ubifsmount before the next distro boot with 'run bootcmd_${target}'
+    # solve reentrant issue in U-Boot v2022.10 with 2 ubifsmount, one to found
+    # script and one for distro cmd called in this OpenSTLinux boot script
+    env set prefix ${boot_prefixes}
+    run scan_dev_for_extlinux;
+else
+    # start the correct exlinux.conf
+    run bootcmd_${target}
+fi
 
 echo SCRIPT FAILED... ${boot_prefixes}${boot_syslinux_conf} not found !
 

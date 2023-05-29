@@ -38,23 +38,25 @@ do_install() {
     echo "menu title Select the boot mode" > ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
     echo "MENU BACKGROUND /splash.bmp" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
     echo "TIMEOUT 20" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
-    if [ "${RT_KERNEL}" = "1" ];
-    then
-        echo "DEFAULT rt" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
-    else
+    #if [ "${RT_KERNEL}" = "1" ];
+    #then
+    #    echo "DEFAULT rt" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
+    #else
         echo "DEFAULT board" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
-    fi
+    #fi
     echo "LABEL board" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
-    echo "	KERNEL /uImage" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
+    echo "	KERNEL /zImage" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
     echo "	FDTDIR /" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
-    echo "	APPEND root=/dev/mmcblk0p5 rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
+    echo "	INITRD /st-image-resize-initrd" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
+    echo "	APPEND root=PARTLABEL=rootfs rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
 
     if [ "${RT_KERNEL}" = "1" ];
     then
         echo "LABEL rt" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
-        echo "	KERNEL /uImage-rt" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
+        echo "	KERNEL /zImage-${RT_KERNEL_VERSION}" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
         echo "	FDTDIR /" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
-        echo "	APPEND root=/dev/mmcblk0p5 rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
+        echo "	INITRD /st-image-resize-initrd" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
+        echo "	APPEND root=PARTLABEL=rootfs rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
     fi
     echo "LABEL efi" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
     echo "	localboot 1" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2_extlinux.conf
@@ -64,24 +66,20 @@ do_install() {
     echo "menu title Select the boot mode" > ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
     echo "MENU BACKGROUND /splash.bmp" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
     echo "TIMEOUT 20" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
-    if [ "${RT_KERNEL}" = "1" ];
-    then
-        echo "DEFAULT rt" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
-    else
-        echo "DEFAULT board" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
-    fi
     echo "DEFAULT board" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
     echo "LABEL board" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
-    echo "	KERNEL /uImage" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "	KERNEL /zImage" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
     echo "	FDTDIR /" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
-    echo "	APPEND root=/dev/mmcblk0p5 rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "	INITRD /st-image-resize-initrd" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "	APPEND root=PARTLABEL=rootfs rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
 
     if [ "${RT_KERNEL}" = "1" ];
     then
         echo "LABEL rt" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
-        echo "	KERNEL /uImage-rt" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
+        echo "	KERNEL /zImage-${RT_KERNEL_VERSION}" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
         echo "	FDTDIR /" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
-        echo "	APPEND root=/dev/mmcblk0p5 rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
+        echo "	INITRD /st-image-resize-initrd" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
+        echo "	APPEND root=PARTLABEL=rootfs rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
     fi
     echo "LABEL efi" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
     echo "	localboot 1" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1_extlinux.conf
@@ -91,23 +89,25 @@ do_install() {
     echo "menu title Select the boot mode" > ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
     echo "MENU BACKGROUND /splash.bmp" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
     echo "TIMEOUT 20" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
-    if [ "${RT_KERNEL}" = "1" ];
-    then
-        echo "DEFAULT rt" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
-    else
+    #if [ "${RT_KERNEL}" = "1" ];
+    #then
+    #    echo "DEFAULT rt" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
+    #else
         echo "DEFAULT board" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
-    fi
+    #fi
     echo "LABEL board" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
-    echo "	KERNEL /uImage" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
+    echo "	KERNEL /zImage" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
     echo "	FDTDIR /" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
-    echo "	APPEND root=/dev/mmcblk0p5 rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
+    echo "	INITRD /st-image-resize-initrd" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
+    echo "	APPEND root=PARTLABEL=rootfs rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
 
     if [ "${RT_KERNEL}" = "1" ];
     then
         echo "LABEL rt" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
-        echo "	KERNEL /uImage-rt" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
+        echo "	KERNEL /zImage-${RT_KERNEL_VERSION}" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
         echo "	FDTDIR /" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
-        echo "	APPEND root=/dev/mmcblk0p5 rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
+        echo "	INITRD /st-image-resize-initrd" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
+        echo "	APPEND root=PARTLABEL=rootfs rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
     fi
     echo "LABEL efi" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
     echo "	localboot 1" >> ${D}/boot/mmc0_extlinux/stm32mp135f-dk_extlinux.conf
@@ -118,53 +118,91 @@ do_install() {
     echo "menu title Select the boot mode" > ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
     echo "MENU BACKGROUND /splash.bmp" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
     echo "TIMEOUT 20" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
-    if [ "${RT_KERNEL}" = "1" ];
-    then
-        echo "DEFAULT rt" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
-    else
-        echo "DEFAULT board" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
-    fi
+    echo "DEFAULT board" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
     echo "LABEL board" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
-    echo "	KERNEL /uImage" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
+    echo "	KERNEL /zImage" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
     echo "	FDTDIR /" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
-    echo "	APPEND root=/dev/mmcblk0p5 rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
+    echo "	INITRD /st-image-resize-initrd" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
+    echo "	APPEND root=PARTLABEL=rootfs rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
 
     if [ "${RT_KERNEL}" = "1" ];
     then
         echo "LABEL rt" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
-        echo "	KERNEL /uImage-rt" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
+        echo "	KERNEL /zImage-${RT_KERNEL_VERSION}" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
         echo "	FDTDIR /" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
-        echo "	APPEND root=/dev/mmcblk0p5 rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
+        echo "	INITRD /st-image-resize-initrd" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
+        echo "	APPEND root=PARTLABEL=rootfs rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
     fi
     echo "LABEL efi" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
     echo "	localboot 1" >> ${D}/boot/mmc0_extlinux/stm32mp157c-dk2-scmi_extlinux.conf
 
-    # stm32mp157c-ev1_extlinux.conf
+    # stm32mp157c-ev1-scmi_extlinux.conf
     install -d ${D}/boot/mmc0_extlinux/
     echo "menu title Select the boot mode" > ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
     echo "MENU BACKGROUND /splash.bmp" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
     echo "TIMEOUT 20" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
-    if [ "${RT_KERNEL}" = "1" ];
-    then
-        echo "DEFAULT rt" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
-    else
-        echo "DEFAULT board" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
-    fi
     echo "DEFAULT board" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
     echo "LABEL board" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
-    echo "	KERNEL /uImage" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
+    echo "	KERNEL /zImage" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
     echo "	FDTDIR /" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
-    echo "	APPEND root=/dev/mmcblk0p5 rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
+    echo "	INITRD /st-image-resize-initrd" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
+    echo "	APPEND root=PARTLABEL=rootfs rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
 
     if [ "${RT_KERNEL}" = "1" ];
     then
         echo "LABEL rt" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
-        echo "	KERNEL /uImage-rt" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
+        echo "	KERNEL /zImage-${RT_KERNEL_VERSION}" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
         echo "	FDTDIR /" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
-        echo "	APPEND root=/dev/mmcblk0p5 rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
+        echo "	INITRD /st-image-resize-initrd" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
+        echo "	APPEND root=PARTLABEL=rootfs rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
     fi
     echo "LABEL efi" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
     echo "	localboot 1" >> ${D}/boot/mmc0_extlinux/stm32mp157c-ev1-scmi_extlinux.conf
+
+
+    install -d ${D}/boot/mmc1_extlinux/
+    # stm32mp157c-ev1_extlinux.conf
+    echo "menu title Select the boot mode" > ${D}/boot/mmc1_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "MENU BACKGROUND /splash.bmp" >> ${D}/boot/mmc1_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "TIMEOUT 20" >> ${D}/boot/mmc1_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "DEFAULT board" >> ${D}/boot/mmc1_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "LABEL board" >> ${D}/boot/mmc1_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "	KERNEL /zImage" >> ${D}/boot/mmc1_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "	FDTDIR /" >> ${D}/boot/mmc1_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "	INITRD /st-image-resize-initrd" >> ${D}/boot/mmc1_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "	APPEND root=PARTLABEL=rootfs rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc1_extlinux/stm32mp157c-ev1_extlinux.conf
+
+    if [ "${RT_KERNEL}" = "1" ];
+    then
+        echo "LABEL rt" >> ${D}/boot/mmc1_extlinux/stm32mp157c-ev1_extlinux.conf
+        echo "	KERNEL /zImage-${RT_KERNEL_VERSION}" >> ${D}/boot/mmc1_extlinux/stm32mp157c-ev1_extlinux.conf
+        echo "	FDTDIR /" >> ${D}/boot/mmc1_extlinux/stm32mp157c-ev1_extlinux.conf
+        echo "	INITRD /st-image-resize-initrd" >> ${D}/boot/mmc1_extlinux/stm32mp157c-ev1_extlinux.conf
+        echo "	APPEND root=PARTLABEL=rootfs rootwait rw console=ttySTM0,115200" >> ${D}/boot/mmc1_extlinux/stm32mp157c-ev1_extlinux.conf
+    fi
+    #echo "LABEL efi" >> ${D}/boot/mmc1_extlinux/stm32mp157c-ev1_extlinux.conf
+    #echo "	localboot 1" >> ${D}/boot/mmc1_extlinux/stm32mp157c-ev1_extlinux.conf
+
+    install -d ${D}/boot/nand0_extlinux/
+    # stm32mp157c-ev1_extlinux.conf
+    echo "menu title Select the boot mode" > ${D}/boot/nand0_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "MENU BACKGROUND /splash.bmp" >> ${D}/boot/nand0_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "TIMEOUT 20" >> ${D}/boot/nand0_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "DEFAULT board" >> ${D}/boot/nand0_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "LABEL board" >> ${D}/boot/nand0_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "	KERNEL /zImage" >> ${D}/boot/nand0_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "	FDTDIR /" >> ${D}/boot/nand0_extlinux/stm32mp157c-ev1_extlinux.conf
+    echo "	APPEND ubi.mtd=UBI rootfstype=ubifs root=ubi0:rootfs rootwait rw console=ttySTM0,115200" >> ${D}/boot/nand0_extlinux/stm32mp157c-ev1_extlinux.conf
+
+    if [ "${RT_KERNEL}" = "1" ];
+    then
+        echo "LABEL rt" >> ${D}/boot/nand0_extlinux/stm32mp157c-ev1_extlinux.conf
+        echo "	KERNEL /zImage-${RT_KERNEL_VERSION}" >> ${D}/boot/nand0_extlinux/stm32mp157c-ev1_extlinux.conf
+        echo "	FDTDIR /" >> ${D}/boot/nand0_extlinux/stm32mp157c-ev1_extlinux.conf
+        echo "	APPEND ubi.mtd=UBI rootfstype=ubifs root=ubi0:rootfs rootwait rw console=ttySTM0,115200" >> ${D}/boot/nand0_extlinux/stm32mp157c-ev1_extlinux.conf
+    fi
+    #echo "LABEL efi" >> ${D}/boot/nand0_extlinux/stm32mp157c-ev1_extlinux.conf
+    #echo "	localboot 1" >> ${D}/boot/nand0_extlinux/stm32mp157c-ev1_extlinux.conf
 
 
 }
