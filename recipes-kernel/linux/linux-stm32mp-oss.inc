@@ -7,6 +7,8 @@ inherit kernel
 include linux-stm32mp.inc
 include linux-stm32mp-sign-kernel.inc
 
+#SRC_URI = "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.15.tar.xz;name=kernel"
+
 SRC_URI += " \
     file://0001-ARM-STM32MP15-support-of-Preemptible-Kernel.patch \
     "
@@ -56,5 +58,6 @@ include ${@bb.utils.contains('RT_KERNEL', '1', 'linux-stm32mp-oss-rt.inc', '', d
 do_install:append() {
     install -d ${D}/${sysconfdir}/modprobe.d/
     echo "softdep snd-soc-cs42l51 pre: snd-soc-cs42l51-i2c" > ${D}/${sysconfdir}/modprobe.d/stm32mp1-snd.conf
+    echo "softdep etnaviv pre: panel-orisetech-otm8009a" > ${D}/${sysconfdir}/modprobe.d/stm32mp15-drm.conf
 }
 FILES:${KERNEL_PACKAGE_NAME}-modules += "${sysconfdir}/modprobe.d"

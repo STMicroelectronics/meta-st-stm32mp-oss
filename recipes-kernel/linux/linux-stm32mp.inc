@@ -45,7 +45,6 @@ do_configure:prepend() {
             die "NO DEFCONFIG SPECIFIED"
         fi
     fi
-
     if [ ! -z "${KERNEL_CONFIG_FRAGMENTS}" ]
     then
         for f in ${KERNEL_CONFIG_FRAGMENTS}
