@@ -3,7 +3,7 @@ The goal is to build a Zephyr image from the community to test it on STM32MP boa
 
 ## Important note
 
-The support of the stm32mp1 platform has been introduced since the Honister distribution of
+The support of the stm32mp1 platform has been introduced since the Mickledore distribution of
 the meta-zephyr layer.
 
 ## Layer Dependency
@@ -55,23 +55,23 @@ cd layers/meta-zephyr
 git checkout -b WORKING < sha1 or origin/branch >
 cd -
 ```
-As example for Honister distribution:
+As example for Mickledorer distribution:
 ```
 git clone https://github.com/openembedded/openembedded-core.git layers/openembedded-core
 cd layers/openembedded-core
-git checkout -b WORKING origin/honister
+git checkout -b WORKING origin/mickledore
 cd -
 git clone https://github.com/openembedded/bitbake.git layers/openembedded-core/bitbake
 cd layers/openembedded-core/bitbake
-git checkout -b WORKING origin/1.52
+git checkout -b WORKING origin/2.4
 cd -
 git clone git://github.com/openembedded/meta-openembedded.git layers/meta-openembedded
 cd layers/meta-openembedded
-git checkout -b WORKING origin/honister
+git checkout -b WORKING origin/mickledore
 cd -
 git clone https://git.yoctoproject.org/meta-zephyr.git layers/meta-zephyr
 cd layers/meta-zephyr
-git checkout -b WORKING origin/honister
+git checkout -b WORKING origin/mickledore
 cd -
 ```
 ### Initializing the OpenEmbedded build environment
