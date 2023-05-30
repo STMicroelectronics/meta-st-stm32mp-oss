@@ -65,9 +65,10 @@ IMAGE_CMD:stbootfs () {
         cp -ar ${IMAGE_ROOTFS}/boot/extlinux.conf  ${IMAGE_ROOTFS}/../bootfs/extlinux/
     fi
     #populate boot image
-    for reg in ${STBOOTFS_FILE_REGEXP}; do
+    cd ${IMAGE_ROOTFS}/boot/
+    for reg in $(ls -1 ${STBOOTFS_FILE_REGEXP}); do
         bbnote "copy $reg"
-        if [ -e "$reg" ]; then
+        if [ -e "${IMAGE_ROOTFS}/boot/$reg" ]; then
             if (echo $reg | grep -q "/") ; then
                 dir=$(dirname $reg)
                 cp -r ${IMAGE_ROOTFS}/boot/$reg ${IMAGE_ROOTFS}/../bootfs/$dir
@@ -76,6 +77,7 @@ IMAGE_CMD:stbootfs () {
             fi
         fi
     done
+    cd -
     cd ${IMAGE_ROOTFS}/../bootfs/
     # use only zImage file
     rm -f uImage*
