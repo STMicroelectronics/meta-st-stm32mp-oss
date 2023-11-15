@@ -42,6 +42,8 @@ EXTRA_OEMAKE = "CROSS_COMPILE_core=${HOST_PREFIX} \
 EXTRA_OEMAKE += "CFG_TEE_CORE_LOG_LEVEL=2"
 EXTRA_OEMAKE += "CFG_TEE_CORE_DEBUG=n"
 
+EXTRA_OEMAKE:append:stm32mp1common = " ${@bb.utils.contains('ST_OPTEE_NO_SHAREDMEMORY', '1', 'CFG_CORE_RESERVED_SHM=n', '', d)}"
+
 OPTEE_ARCH:armv7a = "arm32"
 OPTEE_ARCH:armv7ve = "arm32"
 OPTEE_ARCH:aarch64 = "arm64"
