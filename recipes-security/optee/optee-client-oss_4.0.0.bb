@@ -2,9 +2,11 @@ require optee-client-oss.inc
 # Need to be aligned with the version of OPTEE-OS
 # ------------------------------------------------
 # to be updated
-OPTEE_VERSION = "3.21.0"
+OPTEE_VERSION = "4.0.0"
 
-SRCREV = "8533e0e6329840ee96cf81b6453f257204227e6c"
+SRCREV = "c84206b27d44f8dbe5271d700b952ae10f19ee73"
+# SRCREV = "acb0885c117e73cb6c5c9b1dd9054cb3f93507ee" # 4.0.0
+# SRCREV = "8533e0e6329840ee96cf81b6453f257204227e6c" # 3.22.0
 # SRCREV = "8533e0e6329840ee96cf81b6453f257204227e6c" # 3.21.0
 # SRCREV = "dd2d39b49975d2ada7870fe2b7f5a84d0d3860dc" # 3.20.0
 # SRCREV = "140bf463046071d3ca5ebbde3fb21ee0854e1951" # 3.19.0

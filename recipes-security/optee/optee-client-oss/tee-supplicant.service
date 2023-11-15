@@ -1,14 +1,14 @@
 [Unit]
 Description=TEE Supplicant
+After= systemd-udevd.service
 
 [Service]
 User=tee
 Group=tee
 EnvironmentFile=-/etc/default/tee-supplicant
-EnvironmentFile=-/tmp/tee-supplicant.env
 ExecStartPre=/usr/sbin/create-tee-supplicant-env /tmp/tee-supplicant.env
+EnvironmentFile=-/tmp/tee-supplicant.env
 ExecStart=/usr/sbin/tee-supplicant $RPMB_CID $OPTARGS
-#ExecStart=/usr/sbin/tee-supplicant $OPTARGS /dev/teepriv0
 
 [Install]
 WantedBy=basic.target

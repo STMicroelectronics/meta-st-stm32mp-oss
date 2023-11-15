@@ -10,10 +10,12 @@
 
 [ "$1" ] || { echo Usage: $0 FILE >&2; exit 1; }
 
-for f in /sys/class/mmc_host/mmc*/mmc*\:*/cid; do
+touch $1
+
+for f in /sys/class/mmc_host/mmc*/mmc*\:*/mmcblk?rmpb; do
   [ "$CID" ] && { echo $0: Multiple eMMC devices found, not chosing one automatically >&2; exit 2; }
   # POSIX shells don't expand globbing patterns that match no file
   [ -e $f ] || exit 0
-  CID=$(cat $f)
+  CID=$(cat $(dirname $f)/cid)
 done
 [ "$CID" ] && echo RPMB_CID="--rpmb-cid $CID" >$1
