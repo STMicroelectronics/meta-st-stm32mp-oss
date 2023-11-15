@@ -39,7 +39,7 @@ do_configure:prepend() {
         then
             bbnote "Kernel customized: configuration of linux STM by using external DEFCONFIG"
             install -m 0644 ${WORKDIR}/${KERNEL_EXTERNAL_DEFCONFIG} ${B}/.config
-            oe_runmake -C ${S} O=${B} CC="${KERNEL_CC}" LD="${KERNEL_LD}" oldconfig
+            yes '' | oe_runmake -C ${S} O=${B} CC="${KERNEL_CC}" LD="${KERNEL_LD}" oldconfig
         else
             bbwarn "You must specify KERNEL_DEFCONFIG or KERNEL_EXTERNAL_DEFCONFIG"
             die "NO DEFCONFIG SPECIFIED"
@@ -74,6 +74,14 @@ do_configure:prepend() {
 }
 
 # ---------------------------------------------------------------------
+do_install:append() {
+    install -d ${D}/${sysconfdir}/modprobe.d/
+
+    #snd dependencies
+    install -d ${D}/${sysconfdir}/modprobe.d/
+    echo "softdep snd-soc-cs42l51 pre: snd-soc-cs42l51-i2c" > ${D}/${sysconfdir}/modprobe.d/stm32mp1-snd.conf
+}
+# ---------------------------------------------------------------------
 # Support checking the kernel load address parameter: expecting proper value for ST kernel.
 #
 python do_loadaddrcheck() {
@@ -84,4 +92,5 @@ python do_loadaddrcheck() {
 PACKAGES =+ "${KERNEL_PACKAGE_NAME}-headers"
 FILES:${KERNEL_PACKAGE_NAME}-headers = "${exec_prefix}/src/linux*"
 FILES:${KERNEL_PACKAGE_NAME}-image  += "boot/ ${KERNEL_IMAGEDEST}"
+FILES:${KERNEL_PACKAGE_NAME}-modules += "${sysconfdir}/modprobe.d"
 

@@ -5,12 +5,13 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 inherit kernel
 include linux-stm32mp.inc
-include linux-stm32mp-sign-kernel.inc
+#include linux-stm32mp-sign-kernel.inc
 
 #SRC_URI = "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.15.tar.xz;name=kernel"
 
 SRC_URI += " \
     file://0001-ARM-STM32MP15-support-of-Preemptible-Kernel.patch \
+    file://0002-Activate-dt-overlay.patch \
     "
 
 PV = "${LINUX_VERSION}"
@@ -28,7 +29,7 @@ KERNEL_CONFIG_FRAGMENTS += "${@bb.utils.contains('COMBINED_FEATURES', 'optee', '
 KERNEL_CONFIG_FRAGMENTS += "${WORKDIR}/fragments/6.x/fragment-05-modules.config"
 KERNEL_CONFIG_FRAGMENTS += "${@oe.utils.ifelse(d.getVar('KERNEL_SIGN_ENABLE') == '1', '${WORKDIR}/fragments/6.x/fragment-06-signature.config','')} "
 KERNEL_CONFIG_FRAGMENTS += "${@bb.utils.contains('MACHINE_FEATURES', 'nosmp', '${WORKDIR}/fragments/6.x/fragment-06-nosmp.config', '', d)} "
-KERNEL_CONFIG_FRAGMENTS += "${WORKDIR}/fragments/6.x/fragment-09-efi.config"
+KERNEL_CONFIG_FRAGMENTS += "${@bb.utils.contains('MACHINE_FEATURES', 'efi', '${WORKDIR}/fragments/6.x/fragment-09-efi.config', '', d)}"
 
 SRC_URI += "file://6.x/fragment-01-multiv7_cleanup.config;subdir=fragments"
 SRC_URI += "file://6.x/fragment-02-multiv7_addons.config;subdir=fragments"
@@ -59,5 +60,9 @@ do_install:append() {
     install -d ${D}/${sysconfdir}/modprobe.d/
     echo "softdep snd-soc-cs42l51 pre: snd-soc-cs42l51-i2c" > ${D}/${sysconfdir}/modprobe.d/stm32mp1-snd.conf
     echo "softdep etnaviv pre: panel-orisetech-otm8009a" > ${D}/${sysconfdir}/modprobe.d/stm32mp15-drm.conf
+}
+do_install:prepend() {
+    install -d "${D}${nonarch_base_libdir}/modules/${KERNEL_VERSION}/"
+    touch  "${D}${nonarch_base_libdir}/modules/${KERNEL_VERSION}/source"
 }
 FILES:${KERNEL_PACKAGE_NAME}-modules += "${sysconfdir}/modprobe.d"
