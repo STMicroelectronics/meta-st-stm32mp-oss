@@ -5,6 +5,7 @@ Subject: [PATCH] Dynamically load openssl.cnf for openssl-1.0.x/1.1.x/3.0
 
 Signed-off-by: Lans Zhang <jia.zhang@windriver.com>
 Signed-off-by: Yi Zhao <yi.zhao@windriver.com>
+Upstream-Status: Pending
 ---
  Make.rules | 18 ++++++++++++++++--
  1 file changed, 16 insertions(+), 2 deletions(-)

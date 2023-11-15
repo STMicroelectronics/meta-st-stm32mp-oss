@@ -7,6 +7,7 @@ The missing File::Slurp required by xxdi.pl is added. To avoid introducing
 an extra xxd package, remove the support of using xxd.
 
 Signed-off-by: Lans Zhang <jia.zhang@windriver.com>
+Upstream-Status: Pending
 ---
  Make.rules | 3 +--
  Makefile   | 2 +-

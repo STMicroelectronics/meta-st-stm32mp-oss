@@ -4,6 +4,7 @@ Date: Sat, 28 Jan 2017 13:42:28 +0800
 Subject: [PATCH] Build DBX by default
 
 Signed-off-by: Lans Zhang <jia.zhang@windriver.com>
+Upstream-Status: Pending
 ---
  Makefile | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)

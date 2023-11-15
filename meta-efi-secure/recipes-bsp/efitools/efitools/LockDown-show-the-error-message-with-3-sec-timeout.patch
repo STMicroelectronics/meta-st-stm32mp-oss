@@ -4,6 +4,7 @@ Date: Tue, 17 Jan 2017 12:48:27 +0800
 Subject: [PATCH] LockDown: show the error message with 3-sec timeout
 
 Signed-off-by: Lans Zhang <jia.zhang@windriver.com>
+Upstream-Status: Pending
 ---
  LockDown.c | 20 ++++++++++++--------
  1 file changed, 12 insertions(+), 8 deletions(-)

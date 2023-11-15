@@ -4,6 +4,7 @@ Date: Tue, 17 Jan 2017 17:24:51 +0800
 Subject: [PATCH] Makefile: do not build signed efi image
 
 Signed-off-by: Yunguo Wei <yunguo.wei@windriver.com>
+Upstream-Status: Pending
 ---
  Makefile | 5 ++---
  1 file changed, 2 insertions(+), 3 deletions(-)

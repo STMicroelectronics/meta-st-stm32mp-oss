@@ -1,2 +1,2 @@
-Recipes extracted from meta-secure-core/meta-efi-secure-boot
-URI: https://github.com/jiazhang0/meta-secure-core
+Recipes extracted from meta-secure-core/meta-efi-secure-boot and  meta-secure-core/meta-signing-key/
+URI: https://github.com/Wind-River/meta-secure-core

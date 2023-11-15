@@ -6,6 +6,7 @@ Subject: [PATCH] Fix help2man error
 This issue may be caused by the poky compiler.
 
 Signed-off-by: Lans Zhang <jia.zhang@windriver.com>
+Upstream-Status: Pending
 ---
  Make.rules | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
