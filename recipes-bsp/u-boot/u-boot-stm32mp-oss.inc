@@ -6,7 +6,7 @@ LICENSE = "GPL-2.0-or-later"
 LIC_FILES_CHKSUM = "file://Licenses/README;md5=2ca5f2c35c8cc335f0a19756634782f1"
 PE = "1"
 
-SRC_URI = "git://git.denx.de/u-boot.git;nobranch=1"
+SRC_URI = "git://git.denx.de/u-boot.git;protocol=http;nobranch=1"
 
 SRC_URI:append:stm32mp1common = " \
     file://stm32mp15_disco_defconfig \

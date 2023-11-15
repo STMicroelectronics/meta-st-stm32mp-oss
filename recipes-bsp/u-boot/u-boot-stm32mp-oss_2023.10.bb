@@ -2,8 +2,11 @@ require u-boot-stm32mp-oss.inc
 
 # ------------------------------------------------
 # to be updated
-UBOOT_VERSION = "2023.04"
-SRCREV = "fd4ed6b7e83ec3aea9a2ce21baea8ca9676f40dd"
+UBOOT_VERSION = "2023.10"
+
+SRCREV = "4459ed60cb1e0562bc5b40405e2b4b9bbf766d57"
+#SRCREV = "4459ed60cb1e0562bc5b40405e2b4b9bbf766d57" # 2023.10
+#SRCREV = "83cdab8b2c6ea0fc0860f8444d083353b47f1d5c" # 2023.07.02
 #SRCREV = "fd4ed6b7e83ec3aea9a2ce21baea8ca9676f40dd" # 2023.04
 #SRCREV = "62e2ad1ceafbfdf2c44d3dc1b6efc81e768a96b9" # 2023.01
 #SRCREV = "4debc57a3da6c3f4d3f89a637e99206f4cea0a96" # 2022.10
