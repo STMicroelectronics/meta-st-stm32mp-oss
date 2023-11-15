@@ -17,8 +17,7 @@ part fip   --source rawcopy --fstype=ext4 --fsoptions "noauto" --part-name=fip -
 # U-BOOT env
 part u-boot-env --source empty --part-name=uboot-env --ondisk mmcblk --part-type 0x8301 --fixed-size 512K
 
-part bootfs --source rawcopy --sourceparams="file=${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.bootfs.vfat" --ondisk mmcblk --fstype=vfat --part-type 0xef00 --label bootfs --active --fixed-size 64M
-#part /boot --source rootfs --rootfs-dir=${IMAGE_ROOTFS}/boot --ondisk mmcblk0 --fstype=vfat --part-type 0xef00 --label bootfs --use-uuid --align 8192 --size 64M
+part /boot --source rootfs --rootfs-dir=${IMAGE_ROOTFS}/boot --ondisk mmcblk0 --fstype=vfat --part-type 0xef00 --label bootfs --use-uuid --align 8192 --size 64M
 part / --source rootfs --ondisk mmcblk --fstype=ext4 --label rootfs --fixed-size 1216M
 
 bootloader --ptable gpt
