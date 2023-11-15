@@ -2,7 +2,8 @@ tkaSUMMARY = "Cert_create & Fiptool for fip generation for Trusted Firmware-A"
 LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://license.rst;md5=1dd070c98a281d18d9eefd938729b031"
 
-SRC_URI = "git://github.com/ARM-software/arm-trusted-firmware.git;protocol=https;nobranch=1"
+#SRC_URI = "git://github.com/ARM-software/arm-trusted-firmware.git;protocol=https;nobranch=1"
+SRC_URI = "git://git.trustedfirmware.org/TF-A/trusted-firmware-a.git;protocol=https;nobranch=1"
 #SRCREV corresponds to v2.9
 SRCREV = "d3e71ead6ea5bc3555ac90a446efec84ef6c6122"
 

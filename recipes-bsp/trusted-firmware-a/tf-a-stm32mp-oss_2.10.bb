@@ -2,9 +2,9 @@ require tf-a-stm32mp-oss.inc
 
 # ------------------------------------------------
 # to be updated
-TFA_VERSION = "2.9"
+TFA_VERSION = "2.10"
 
-SRCREV = "d3e71ead6ea5bc3555ac90a446efec84ef6c6122"
+SRCREV = "e7781c84e9b36c948aa84721a09d96ee9e2b6eef"
 #2.9 SRCREV = "d3e71ead6ea5bc3555ac90a446efec84ef6c6122"
 #2.8 SRCREV = "9881bb93a3bc0a3ea37e9f093e09ab4b360a9e48"
 #2.7 SRCREV = "35f4c7295bafeb32c8bcbdfb6a3f2e74a57e732b"

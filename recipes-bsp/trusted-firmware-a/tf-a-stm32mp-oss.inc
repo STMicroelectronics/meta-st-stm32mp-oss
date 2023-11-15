@@ -14,9 +14,8 @@ PROVIDES += "virtual/trusted-firmware-a"
 
 PV = "${TFA_VERSION}-git${SRCPV}"
 
-SRC_URI = "git://github.com/ARM-software/arm-trusted-firmware.git;protocol=https;nobranch=1"
-#2.5 SRCREV = "1e13c500a0351ac4b55d09a63f7008e2438550f8"
-#2.4 SRCREV = "e2c509a39c6cc4dda8734e6509cdbe6e3603cdfc"
+#SRC_URI = "git://github.com/ARM-software/arm-trusted-firmware.git;protocol=https;nobranch=1"
+SRC_URI = "git://git.trustedfirmware.org/TF-A/trusted-firmware-a.git;protocol=https;nobranch=1"
 
 SRC_URI += "file://metadata.bin"
 
@@ -25,7 +24,7 @@ B = "${WORKDIR}/build"
 
 inherit deploy
 
-DEPENDS += "dtc-native tf-a-tools-native"
+DEPENDS += "dtc-native tf-a-tools-oss-native"
 
 # ledge-stm32mp157c-dk2 specific
 TF_A_PLATFORM:stm32mp15common = "stm32mp1"
@@ -39,9 +38,9 @@ EXTRA_OEMAKE:append:armv7ve = ' ARCH=aarch32 ARM_ARCH_MAJOR=7'
 # Debug support
 EXTRA_OEMAKE += 'DEBUG=1'
 EXTRA_OEMAKE += "LOG_LEVEL=40"
+EXTRA_OEMAKE:append:stm32mp1common = " ${@bb.utils.contains('ST_OPTEE_NO_SHAREDMEMORY', '1', 'STM32MP15_OPTEE_RSV_SHM=0', '', d)}"
 
 EXTRA_FWUPDATE = "${@bb.utils.contains('MACHINE_FEATURES', 'fw-update', 'PSA_FWU_SUPPORT=1', '', d)}"
-
 
 TF_A_ENABLE_METADATA = "0"
 #TF_A_ENABLE_METADATA ??= "${@bb.utils.contains('MACHINE_FEATURES', 'fw-update', '1', '0', d)}"
@@ -130,6 +129,14 @@ do_compile() {
                 cp ${B}/usb${soc_suffix}/tf-a-${dt}.stm32 ${B}/usb${soc_suffix}/tf-a-${dt}-usb.stm32
             fi
             echo "################## FIP ###########################"
+            # generate fip for trusted
+#            oe_runmake -C ${S} AARCH32_SP=sp_min \
+#                BUILD_PLAT=${B}/fip-trusted-${dt} \
+#                DTB_FILE_NAME=${dt}.dtb \
+#                BL33=${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-nodtb-${dt}.bin \
+#                BL33_CFG=${DEPLOY_DIR}/images/${MACHINE}/u-boot/u-boot-${dt}.dtb \
+#                fip FIP_NAME=fip-${dt}-trusted.bin
+
             # generate fip for optee
             oe_runmake -C ${S} AARCH32_SP=optee \
                 BUILD_PLAT=${B}/fip-optee-${dt} \
@@ -280,6 +287,11 @@ do_deploy() {
             # BL2 usb
             install -m 644 ${B}/usb${soc_suffix}/tf-a-${dt}-usb.stm32 ${DEPLOYDIR}/arm-trusted-firmware/
 
+#            # FIP trusted
+#            install -m 644 ${B}/fip-trusted-${dt}/fip-${dt}-trusted.bin ${DEPLOYDIR}/fip/
+#            install -m 644 ${B}/fip-trusted-${dt}/bl32.bin ${DEPLOYDIR}/arm-trusted-firmware/bl32-${dt}-trusted.bin
+#            install -m 644 ${B}/fip-trusted-${dt}/bl32/bl32.elf ${DEPLOYDIR}/arm-trusted-firmware/debug/bl32-${dt}-trusted.elf
+#            install -m 644 ${B}/fip-trusted-${dt}/fdts/${dt}-fw-config.dtb ${DEPLOYDIR}/arm-trusted-firmware/${dt}-fw-config-trusted.dtb
             # FIP optee
             install -m 644 ${B}/fip-optee-${dt}/fip-${dt}-optee.bin ${DEPLOYDIR}/fip/
             install -m 644 ${B}/fip-optee-${dt}/fdts/${dt}-fw-config.dtb ${DEPLOYDIR}/arm-trusted-firmware/${dt}-fw-config-optee.dtb
